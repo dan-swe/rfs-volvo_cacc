@@ -26,6 +26,7 @@
 #pragma once 
 
 #include <stdio.h>
+#include "sys_list.h"
 
 /** Buffer type used with dynamically malloced string saving */
 typedef struct
