@@ -126,6 +126,8 @@ define TSC_SPEED_TORQUE_LIMIT  3
 		cmd_var.engine_command_mode = TSC_OVERRIDE_DISABLED;
 		cmd_var.engine_retarder_command_mode = TSC_OVERRIDE_DISABLED;
 		cmd_var.brake_command_mode = XBR_NOT_ACTIVE;
+		cmd_var.engine_torque = 0;
+		cmd_var.engine_retarder_torque = 0;
 		if( clt_update( pclt, DB_LONG_OUTPUT_VAR, DB_LONG_OUTPUT_TYPE,
 		    sizeof( long_output_typ ), (void *) &cmd_var ) == FALSE ) {
 		    fprintf(stderr, "clt_update( DB_LONG_OUTPUT_VAR )\n" );
@@ -144,6 +146,7 @@ define TSC_SPEED_TORQUE_LIMIT  3
 	/** Update database **/
 	if (destination_address == J1939_ADDR_ENGINE) { 
 		cmd_var.engine_retarder_command_mode = 0;
+		cmd_var.engine_retarder_torque = 0;
 		
 		cmd_var.engine_command_mode = engine_mode;
 		cmd_var.brake_command_mode = XBR_NOT_ACTIVE;
@@ -168,6 +171,7 @@ define TSC_SPEED_TORQUE_LIMIT  3
 	}
 	else if (destination_address == J1939_ADDR_ENG_RTDR) { 
 		cmd_var.engine_command_mode = 0;
+		cmd_var.engine_torque = 0;
 
 		cmd_var.engine_retarder_command_mode = engine_mode;
 		cmd_var.brake_command_mode = XBR_NOT_ACTIVE;
