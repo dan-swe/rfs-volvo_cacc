@@ -300,7 +300,7 @@ printf("Got to 3 BSMCACC_decode.msgID %#x msgCnt %d lat %d\n",
 			fflush(stdout);
 		}
                 if (bytes_sent < 0) {
-                        perror("UDP sendto ");
+                        perror("veh_snd: UDP sendto ");
                         printf("port %d addr 0x%08x\n",
                                 ntohs(dst_addr.sin_port),
                                 ntohl(dst_addr.sin_addr.s_addr));
