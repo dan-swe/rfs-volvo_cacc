@@ -1858,6 +1858,7 @@ void tsc1_to_pdu (struct j1939_pdu *pdu, void * pdbv)
 		code_percent_m125_to_p125(tsc1->EnRTrqTrqLm);
         for (i = 4; i < 8; i++)
                 pdu->data_field[i] = 0xff;
+	printf("tsc1_to_pdu: dest: pdu->pdu_specific %d tsc1->EnRTrqTrq %.3f pdu->data_field[3] %hhu\n", pdu->pdu_specific, tsc1->EnRTrqTrqLm, pdu->data_field[3]);
 }
 
 /** reverse also needed for logging to database */
