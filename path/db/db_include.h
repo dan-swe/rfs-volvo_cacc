@@ -12,5 +12,6 @@
 #include "db_clt.h"
 #include "db_slv.h"
 #include "db_lib.h"
+#include "db_utils.h"
 #include <sys/msg.h>
 #endif /* DB_INCLUDE_H */
