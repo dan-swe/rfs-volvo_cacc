@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
 				0, (struct sockaddr *) &dst_addr, sizeof(dst_addr));
 
 				if (bytes_sent < 0) {
-					perror("UDP sendto ");
+					perror("dvi_snd: UDP sendto ");
 					printf("port %d addr 0x%08x\n",
 					ntohs(dst_addr.sin_port),
 					ntohl(dst_addr.sin_addr.s_addr));
@@ -233,7 +233,7 @@ printf("bytes_sent1 %d\n", bytes_sent);
 				0, (struct sockaddr *) &dst_addr2, sizeof(dst_addr2));
 
 				if (bytes_sent < 0) {
-					perror("UDP sendto ");
+					perror("dvi_snd: UDP sendto ");
 					printf("port %d addr 0x%08x\n",
 					ntohs(dst_addr2.sin_port),
 					ntohl(dst_addr2.sin_addr.s_addr));
@@ -369,7 +369,7 @@ printf("bytes_sent2 %d\n", bytes_sent);
 					dvi_out.vehicles[0].isBraking = 1;  // 0:false, 1:braking, 2:hard braking (PATH: same red indication for both 1 & 2)
 				else
 					dvi_out.vehicles[0].isBraking = 0;
-				dvi_out.vehicles[0].hasIntruder = comm_pkt1.maneuver_des_2 & 0x03;	// 0-2: 0=Not available 1=Cut-in 2=Cut-out
+				dvi_out.vehicles[0].hasIntruder = ((comm_pkt1.maneuver_des_2 & 0x03) == 1) ? 1 : 0;	//  0-2: 0=Not available 1=Cut-in 2=Cut-out
 			}
 		}
 
@@ -388,7 +388,7 @@ printf("bytes_sent2 %d\n", bytes_sent);
 					dvi_out.vehicles[1].isBraking = 1;  // 0:false, 1:braking, 2:hard braking (PATH: same red indication for both 1 & 2)
 				else
 					dvi_out.vehicles[1].isBraking = 0;
-				dvi_out.vehicles[1].hasIntruder = comm_pkt2.maneuver_des_2 & 0x03;	// 0-2: 0=Not available 1=Cut-in 2=Cut-out
+				dvi_out.vehicles[1].hasIntruder = ((comm_pkt2.maneuver_des_2 & 0x03) == 1) ? 1 : 0;	// & 0x03;	// 0-2: 0=Not available 1=Cut-in 2=Cut-out
 			}
 		}
 
@@ -407,7 +407,7 @@ printf("bytes_sent2 %d\n", bytes_sent);
 					dvi_out.vehicles[2].isBraking = 1;  // 0:false, 1:braking, 2:hard braking (PATH: same red indication for both 1 & 2)
 				else
 					dvi_out.vehicles[2].isBraking = 0;
-				dvi_out.vehicles[2].hasIntruder = comm_pkt3.maneuver_des_2 & 0x03;	// 0-2: 0=Not available 1=Cut-in 2=Cut-out
+				dvi_out.vehicles[2].hasIntruder = ((comm_pkt3.maneuver_des_2 & 0x03) == 1) ? 1 : 0;	// 0-2: 0=Not available 1=Cut-in 2=Cut-out
 			}
 		}
 
