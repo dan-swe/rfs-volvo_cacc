@@ -78,6 +78,7 @@
 #define PLTN_SIZE			3
 #define CUT_IN_T			30.0
 #define CUT_IN_THRESHOLD	10.0
+#define Over_Spd			1.5		// over speed threshold; added on 01_17_17
 
 /*        
 #define SPLIT_DIST                               2.0                 // 6.0 for NVD
@@ -282,6 +283,7 @@ typedef struct
 typedef struct
 {		
         unsigned short comm_coord;
+		unsigned short join;
 		//unsigned short comm_p[MAX_PLTN_LEN];
         //unsigned short comm_leader;
         //unsigned short comm_pre;

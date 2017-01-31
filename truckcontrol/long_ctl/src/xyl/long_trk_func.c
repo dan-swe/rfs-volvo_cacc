@@ -370,7 +370,7 @@ int read_jbus(float delta_t, float t_filter, long_vehicle_state *pv_can, long_pa
 		jbus_rd_pt->  grade = pv_can-> VP15_RoadInclinationVP15-3.55;  //3.55
 	 */
 	 
-	 if ( (pv_can-> VP15_VehicleWeightVP15)/8000.0 < 1.5)
+	 /*if ( (pv_can-> VP15_VehicleWeightVP15)/8000.0 < 1.5)
 		 grd_offset=3.55;
 	 else
 		 grd_offset=2.0;
@@ -378,7 +378,9 @@ int read_jbus(float delta_t, float t_filter, long_vehicle_state *pv_can, long_pa
 	 if ( (pv_can-> VP15_RoadInclinationVP15-grd_offset) < -1.0)
 		jbus_rd_pt->  grade = pv_can-> VP15_RoadInclinationVP15-(grd_offset+1.0);  //3.55	
 	 else
-		jbus_rd_pt->  grade = pv_can-> VP15_RoadInclinationVP15-(grd_offset);      //3.55
+		jbus_rd_pt->  grade = pv_can-> VP15_RoadInclinationVP15-(grd_offset);      //3.55*/
+
+	 jbus_rd_pt->  grade = pv_can-> Volvo_EgoRoadGrade;
 	 
 	 sens_rd_pt->ego_a=pv_can-> Volvo_EgoAcc;
 	 sens_rd_pt->ego_v=pv_can-> Volvo_EgoVel*0.2778;  // from [km/hr] ==> [m/s]
@@ -494,7 +496,7 @@ int actuate(float delta_t, long_output_typ *pcmd, con_output_typ* con_out_pt, co
   float max_tq_we, tmp_rate;
   static float eng_tq_tmp=0.0, eng_tq_buff=0.0, eng_torq_buff=0.0, eng_retard_buff=0.0;
   static int eng_tq_ini=1, eng_retard_ini=1;
-  static float trans_t=0.0, tq_f_t=0.0, jk_f_t=0.0, we_buff=600.0, JK_cut_in_t=0.0;
+  static float trans_t=0.0, tq_f_t=0.0, jk_f_t=0.0, we_buff=600.0, JK_cut_in_t=0.0, service_brk_t=0.0, service_brk_stop_t=0.0;
   static int cmd_count=0;
 
 	cmd_count++;
@@ -537,7 +539,17 @@ int actuate(float delta_t, long_output_typ *pcmd, con_output_typ* con_out_pt, co
 		  eng_tq_tmp = (eng_tq_tmp)*100.0;			
 	}
 	else
-	    eng_tq_tmp = (eng_tq_tmp)*100.0;
+	{
+	    
+	    // to over-write Tq control command for Gap-Close  // added on 01_16_17
+		if (con_st_pt-> spd >= cnfg_pt->max_spd + Over_Spd)
+			eng_tq_tmp = eng_tq_tmp + 5.0* (cnfg_pt->max_spd + Over_Spd - con_st_pt->spd);
+
+		eng_tq_tmp = (eng_tq_tmp)*100.0;
+
+	}
+
+
 
 	      if (mng_cmd_pt-> trans_mode == 0)
 		  {			  
@@ -561,13 +573,37 @@ int actuate(float delta_t, long_output_typ *pcmd, con_output_typ* con_out_pt, co
 		   if (mng_cmd_pt-> drive_mode <= 1)
 				eng_tq_ini=1;
 
-		   if ((pcmd->engine_torque > 40.0) && (pcmd->engine_torque > eng_torq_buff+10.0*delta_t) )
-			   pcmd->engine_torque = eng_torq_buff+10.0*delta_t;
-		   if ((pcmd->engine_torque > 60.0) && (pcmd->engine_torque > eng_torq_buff+9.0*delta_t) )
-			   pcmd->engine_torque = eng_torq_buff+9.0*delta_t;
+		   
+		   
 		   if ((pcmd->engine_torque > 80.0) && (pcmd->engine_torque > eng_torq_buff+8.0*delta_t) )
 			   pcmd->engine_torque = eng_torq_buff+8.0*delta_t;
+		   else if ((pcmd->engine_torque > 60.0) && (pcmd->engine_torque > eng_torq_buff+9.0*delta_t) )
+			   pcmd->engine_torque = eng_torq_buff+9.0*delta_t;
+		   else if ((pcmd->engine_torque > 40.0) && (pcmd->engine_torque > eng_torq_buff+10.0*delta_t) )
+			   pcmd->engine_torque = eng_torq_buff+10.0*delta_t;
+		   else;
 
+
+
+		/*{
+			if (pcmd->engine_torque < 5.0)
+			{
+				if (pcmd->engine_torque < eng_torq_buff-1.0*delta_t) 
+					pcmd->engine_torque = eng_torq_buff-1.0*delta_t;
+			}
+			else if (pcmd->engine_torque < 10.0)
+			{
+				if (pcmd->engine_torque < eng_torq_buff-1.5*delta_t) 
+					pcmd->engine_torque = eng_torq_buff-1.5*delta_t;
+			}
+			else if (pcmd->engine_torque < 15.0)
+			{
+				if (pcmd->engine_torque < eng_torq_buff-2.0*delta_t) 
+					pcmd->engine_torque = eng_torq_buff-2.0*delta_t;
+			}
+			else;			
+		//}*/		
+			
 
 		   eng_torq_buff=pcmd->engine_torque;
 
@@ -632,7 +668,7 @@ int actuate(float delta_t, long_output_typ *pcmd, con_output_typ* con_out_pt, co
       if (con_out_pt-> con_sw_3 == 1)  //jk_cmd                 
       {   	  		
 		 //pcmd->engine_retarder_torque = 100.0*(con_out_pt-> y12)/JK_REF_TORQUE;	
-		 pcmd->engine_retarder_torque = 100.0*(con_out_pt-> y12)/max_f(100.0, (con_st_pt-> max_jk_we));
+		 pcmd->engine_retarder_torque = 105.0*(con_out_pt-> y12)/max_f(100.0, (con_st_pt-> max_jk_we));
 
 		 if (pcmd->engine_retarder_torque > 0.0)
 			pcmd->engine_retarder_torque = 0.0;
@@ -645,48 +681,45 @@ int actuate(float delta_t, long_output_typ *pcmd, con_output_typ* con_out_pt, co
 		 if (mng_cmd_pt-> drive_mode <= 1)
 				eng_retard_ini=1;
 
-		if ((pcmd->engine_retarder_torque < -60.0) && (pcmd->engine_retarder_torque < eng_retard_buff-15.0*delta_t) )		
+		 /*if ((pcmd->engine_retarder_torque < -60.0) && (pcmd->engine_retarder_torque < eng_retard_buff-15.0*delta_t) )		
 		 	pcmd->engine_retarder_torque = eng_retard_buff-15.0*delta_t;
-		 if ((pcmd->engine_retarder_torque < -75.0) && (pcmd->engine_retarder_torque < eng_retard_buff- 12.5*delta_t) )		
+		 else if ((pcmd->engine_retarder_torque < -75.0) && (pcmd->engine_retarder_torque < eng_retard_buff- 12.5*delta_t) )		
 		 	pcmd->engine_retarder_torque = eng_retard_buff-12.5*delta_t;
-		 if ((pcmd->engine_retarder_torque < -90.0) && (pcmd->engine_retarder_torque < eng_retard_buff-10.0*delta_t) )		
+		 else if ((pcmd->engine_retarder_torque < -90.0) && (pcmd->engine_retarder_torque < eng_retard_buff-10.0*delta_t) )		
 		 	pcmd->engine_retarder_torque = eng_retard_buff-10.0*delta_t;
+		 else;*/
+
+		/* if ((pcmd->engine_retarder_torque < -5.0) && (pcmd->engine_retarder_torque < eng_retard_buff-2.0*delta_t) )  // added on 01_25_17
+			pcmd->engine_retarder_torque = eng_retard_buff-2.0*delta_t;
+		 else if ((pcmd->engine_retarder_torque < -10.0) && (pcmd->engine_retarder_torque < eng_retard_buff-3.0*delta_t) )  // added on 01_25_17
+			pcmd->engine_retarder_torque = eng_retard_buff-3.0*delta_t;
+		 else if ((pcmd->engine_retarder_torque < -20.0) && (pcmd->engine_retarder_torque < eng_retard_buff-4.0*delta_t) )
+			pcmd->engine_retarder_torque = eng_retard_buff-4.0*delta_t;
+		 else if ((pcmd->engine_retarder_torque < -30.0) && (pcmd->engine_retarder_torque < eng_retard_buff-5.0*delta_t) )
+			pcmd->engine_retarder_torque = eng_retard_buff-5.0*delta_t;
+		 else if ((pcmd->engine_retarder_torque < -40.0) && (pcmd->engine_retarder_torque < eng_retard_buff-6.5*delta_t) )
+			pcmd->engine_retarder_torque = eng_retard_buff-6.5*delta_t;
+		 else if ((pcmd->engine_retarder_torque < -50.0) && (pcmd->engine_retarder_torque < eng_retard_buff-7.0*delta_t) )		
+		 	pcmd->engine_retarder_torque = eng_retard_buff-7.0*delta_t;
+		 else if ((pcmd->engine_retarder_torque < -75.0) && (pcmd->engine_retarder_torque < eng_retard_buff- 8.0*delta_t) )		
+		 	pcmd->engine_retarder_torque = eng_retard_buff-8.0*delta_t;
+		 else if ((pcmd->engine_retarder_torque < -90.0) && (pcmd->engine_retarder_torque < eng_retard_buff-9.0*delta_t) )		
+		 	pcmd->engine_retarder_torque = eng_retard_buff-90*delta_t;
+		 else; */
 
 		 eng_retard_buff=pcmd->engine_retarder_torque;
 		
-		if (veh_info_pt-> veh_id == 1)
-		{
-			if (pcmd->engine_retarder_torque < -5.0)
-				pcmd->engine_retarder_torque=0.25*(pcmd->engine_retarder_torque);
-			else if (pcmd->engine_retarder_torque < -6.0)
-				//pcmd->engine_retarder_torque=0.3*(pcmd->engine_retarder_torque);
-				pcmd->engine_retarder_torque=0.3*(pcmd->engine_retarder_torque);
-			else if (pcmd->engine_retarder_torque < -8.0)
-				//pcmd->engine_retarder_torque=0.4*(pcmd->engine_retarder_torque);
-				pcmd->engine_retarder_torque=0.5*(pcmd->engine_retarder_torque);	
-			else if (pcmd->engine_retarder_torque < -10.0)
-				pcmd->engine_retarder_torque=0.8*(pcmd->engine_retarder_torque);
-				
-			else;
-		}
-		else
-		{
-			if (pcmd->engine_retarder_torque < -5.0)				
-				pcmd->engine_retarder_torque=0.5*(pcmd->engine_retarder_torque);
-			else if (pcmd->engine_retarder_torque < -6.0)
-				pcmd->engine_retarder_torque=0.65*(pcmd->engine_retarder_torque);
-			else if (pcmd->engine_retarder_torque < -8.0)
-				pcmd->engine_retarder_torque=0.8*(pcmd->engine_retarder_torque);			
-			else;
-		}
-		  
+	
 		 if (pcmd->engine_retarder_torque < -98.5)
 			pcmd->engine_retarder_torque = -98.5;
         
 		 pcmd->engine_command_mode = XBR_NOT_ACTIVE; 
-		 pcmd->engine_torque =0.0;		 
-		 pcmd->engine_retarder_command_mode = XBR_ACTIVE;		 
-		 pcmd->engine_retarder_priority=TSC_HIGHEST;  /*TSC_HIGHEST :0; TSC_HIGH: 1; TSC_MEDIUM: 2; TSC_LOW: 3  */ 	
+		 pcmd->engine_torque = 0.0;		 
+		 pcmd->engine_retarder_command_mode = XBR_ACTIVE;
+		 if (con_out_pt-> con_sw_5 != 1)   
+			pcmd->engine_retarder_priority=TSC_HIGHEST;  /*TSC_HIGHEST :0; TSC_HIGH: 1; TSC_MEDIUM: 2; TSC_LOW: 3  */ 	
+		 else
+			pcmd->engine_retarder_priority=TSC_LOW;
 		 
 		  if (cmd_count == 10)
 			    pcmd->engine_retarder_torque =  pcmd->engine_retarder_torque - 1.0;
@@ -694,7 +727,7 @@ int actuate(float delta_t, long_output_typ *pcmd, con_output_typ* con_out_pt, co
 			    pcmd->engine_retarder_torque =  pcmd->engine_retarder_torque + 1.0;
 		 
 		 // jk fault
-		 if ( (pcmd->engine_retarder_torque <= -90.0) && (jbus_rd_pt-> long_accel > -0.1) )
+		 if ( (pcmd->engine_retarder_torque <= -20.0) && (jbus_rd_pt-> long_accel > -0.1) )
 			jk_f_t +=delta_t;
 		 else
 			jk_f_t=0.0;
@@ -722,18 +755,33 @@ int actuate(float delta_t, long_output_typ *pcmd, con_output_typ* con_out_pt, co
 
 	  //if ((veh_info_pt-> cut_in==ON) && (JK_cut_in_t < 3.0) && (sens_rd_pt-> target_d < CUT_IN_THRESHOLD))
 	  //if ((veh_info_pt-> cut_in==ON) && (JK_cut_in_t < 3.0) && (sens_rd_pt-> target_d_raw < CUT_IN_THRESHOLD))
-	  if ((JK_cut_in_t < 3.0) && (sens_rd_pt-> target_d_raw < CUT_IN_THRESHOLD))
+	 // if ((JK_cut_in_t < 3.0) && (sens_rd_pt-> target_d_raw < CUT_IN_THRESHOLD))
+
+	  if (sens_rd_pt-> target_d_raw < CUT_IN_THRESHOLD)
+		  pcmd->engine_retarder_torque = -20.0*(con_st_pt-> wt_factor);
+
+	  if ((JK_cut_in_t < 3.0) && (sens_rd_pt-> target_d_raw <  0.7*(con_st_pt-> des_f_dist)))
 	  {
 		 JK_cut_in_t += delta_t;
 		 pcmd->engine_command_mode = XBR_NOT_ACTIVE; 
 		 pcmd->engine_torque =0.0;		 
 		 pcmd->engine_retarder_command_mode = XBR_ACTIVE;		 
-		 pcmd->engine_retarder_priority=TSC_HIGHEST;  /*TSC_HIGHEST :0; TSC_HIGH: 1; TSC_MEDIUM: 2; TSC_LOW: 3*/ 	
-		 pcmd->engine_retarder_torque = -20.0*(con_st_pt-> wt_factor);
+		 pcmd->engine_retarder_priority=TSC_HIGHEST;  /*TSC_HIGHEST :0; TSC_HIGH: 1; TSC_MEDIUM: 2; TSC_LOW: 3*/ 
+
+		 if (sens_rd_pt-> target_d_raw <  0.2*(con_st_pt-> des_f_dist))
+			 pcmd->engine_retarder_torque = -40.0*(con_st_pt-> wt_factor);
+		 else if (sens_rd_pt-> target_d_raw <  0.3*(con_st_pt-> des_f_dist))
+			 pcmd->engine_retarder_torque = -30.0*(con_st_pt-> wt_factor);
+		 else if (sens_rd_pt-> target_d_raw <  0.4*(con_st_pt-> des_f_dist))
+			 pcmd->engine_retarder_torque = -20.0*(con_st_pt-> wt_factor);
+		 else if (sens_rd_pt-> target_d_raw <  0.5*(con_st_pt-> des_f_dist))
+			 pcmd->engine_retarder_torque = -15.0*(con_st_pt-> wt_factor);
+		 else
+			pcmd->engine_retarder_torque = -10.0*(con_st_pt-> wt_factor);
 	  }
 	  else
 		JK_cut_in_t=0.0;
-
+	  
 
 
 	  /*******************************************
@@ -744,18 +792,36 @@ int actuate(float delta_t, long_output_typ *pcmd, con_output_typ* con_out_pt, co
       if (con_out_pt-> con_sw_5 == 1)                           // E brk cmd           
       {  		  
 	     pcmd->brake_command_mode = XBR_ACTIVE; 		  
-	     pcmd->brake_priority=TSC_HIGHEST;              /*TSC_HIGHEST :0; TSC_HIGH: 1; TSC_MEDIUM: 2; TSC_LOW: 3  */    
+	     pcmd->brake_priority=TSC_LOW;              /*TSC_HIGHEST :0; TSC_HIGH: 1; TSC_MEDIUM: 2; TSC_LOW: 3  */    
 		 pcmd->engine_command_mode = TSC_OVERRIDE_DISABLED; //Use this if possible   		   
          pcmd->engine_torque = 0.0;
          
-		/* if (con_out_pt-> y11 < 0.0)                          // using usyn 03_01_16              
-			pcmd->ebs_deceleration = con_out_pt-> y14;          // changed on 11_03_15
-         if (pcmd->ebs_deceleration > - 1.2)
-			 pcmd->ebs_deceleration = - 1.2;          
-		 if (pcmd->ebs_deceleration < - 2.5)
-			 pcmd->ebs_deceleration = - 2.5; */         
+		 if (pcmd->ebs_deceleration > -0.5)
+		 {
+			 service_brk_t=0.0;	
+			 service_brk_stop_t = 5.0;
+			 pcmd->ebs_deceleration=0.0;
+		 }
+		 else
+		 {						
+		    if (service_brk_t < 4.0)
+			{
+				service_brk_t +=delta_t;
+				service_brk_stop_t = 5.0;				
+				pcmd->ebs_deceleration = con_out_pt-> y14;  // changed on 01_16_17
+			}
+			else
+				service_brk_stop_t = 0.0;
 
-          
+			if (service_brk_stop_t < 4.0)
+			{	
+				service_brk_t=5.0;
+				service_brk_stop_t +=delta_t;
+				pcmd->ebs_deceleration = 0.0;
+			}
+			else
+				service_brk_t=0.0;
+		 }          
 
 		   eng_tq_ini=1;
       }                                                        
@@ -766,7 +832,7 @@ int actuate(float delta_t, long_output_typ *pcmd, con_output_typ* con_out_pt, co
 			pcmd->ebs_deceleration = -0.0;
       }   // E-brake end 
               
-	  if ( (pcmd->ebs_deceleration <= -1.2) && (jbus_rd_pt-> long_accel >=0.0) )
+	  if ( (pcmd->ebs_deceleration <= -0.2) && (jbus_rd_pt-> long_accel >=0.0) )
 		  f_ind_pt-> brk = 1;
 	  else
 		  f_ind_pt-> brk = 0;

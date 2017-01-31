@@ -8,7 +8,8 @@
 #define LONG_TRK_FUNC_H 
 
 extern int coording(float, float, control_state_typ*, sens_read_typ*, jbus_read_typ*, control_config_typ*, switch_typ*, f_mode_comm_typ*, vehicle_info_typ*, pltn_info_typ*, manager_cmd_typ*);
-extern int maneuver(float, float, float, float *,float *, float *, road_info_typ*, control_config_typ* , control_state_typ* , sens_read_typ*, switch_typ*, vehicle_info_typ* , fault_index_typ *, /*int,*/ int*, manager_cmd_typ*, pltn_info_typ*);         
+extern int maneuver(float, float, float, float *,float *, float *, road_info_typ*, control_config_typ* , control_state_typ* , sens_read_typ*, switch_typ*, 
+					vehicle_info_typ* , fault_index_typ *, /*int,*/ int*, manager_cmd_typ*, pltn_info_typ*, jbus_read_typ*);         
 extern int dvi(float, switch_typ*, control_state_typ*, vehicle_info_typ*, int*);
 extern int control(float, float, int*, jbus_read_typ*, manager_cmd_typ*, control_config_typ*, control_state_typ*, switch_typ*, vehicle_info_typ*,con_output_typ*);    
 extern int cacc(float, int*, jbus_read_typ*, manager_cmd_typ*, control_config_typ*, control_state_typ*, switch_typ*, vehicle_info_typ*,con_output_typ*);    

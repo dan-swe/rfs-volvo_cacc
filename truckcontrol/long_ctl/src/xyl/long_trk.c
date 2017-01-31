@@ -109,6 +109,7 @@
 //#define TEST_BRK
 #define DVI
 //#define Veh_ID_ReConfig
+//#define GPS_DIST
 
 static float track_length=260.0;
 static float stop_period=0.0;
@@ -182,7 +183,6 @@ static road_info_typ  road_info;
 static road_info_typ* road_info_pt;
 static local_pos_typ str_pos;
 static local_pos_typ *str_pos_pt;
-
 
 
 FILE* pout;                              // 04_04_03
@@ -348,8 +348,7 @@ int init_tasks(db_clt_typ *pclt, long_ctrl *pctrl, long_output_typ *pcmd)
         /* Read from CommandTestType section */
         if ((pfin1 = get_ini_section(ini_file, "long_trk")) == NULL)
             {
-                printf("LONG_TRK.C:Cannot get ini file %s, section %s\n",
-                   ini_file, "long_trk"); 
+                printf("LONG_TRK.C:Cannot get ini file %s, section %s\n",                   ini_file, "long_trk"); 
                 fflush(stdout);
                 return 0;
             }
@@ -377,8 +376,8 @@ int init_tasks(db_clt_typ *pclt, long_ctrl *pctrl, long_output_typ *pcmd)
 	config.truck_CACC = get_ini_bool( pfin1, "CACC", FALSE );  
 	config.truck_ACC = get_ini_bool( pfin1, "ACC", FALSE );  
 
-	config. ACC_tGap = (float)get_ini_double( pfin1, "ACC_Time_Gap", 2.0L );
-	config. CACC_tGap = (float)get_ini_double( pfin1, "CACC_Time_Gap", 1.1L );
+	config. ACC_tGap = (float)get_ini_double( pfin1, "ACCTimeGap", 1.6L );
+	config. CACC_tGap = (float)get_ini_double( pfin1, "CACCTimeGap", 1.1L );
 
     config.use_comm = get_ini_bool( pfin1, "UseComm", TRUE );
     config.eaton_radar = get_ini_bool( pfin1, "EatonRadar", TRUE );
@@ -571,7 +570,7 @@ int run_tasks(db_clt_typ *pclt, long_ctrl *pctrl, long_output_typ *pcmd)
 
     float v1=0.0, v2=0.0, v3=0.0;
     static float v=0.0; // max_spd_buff=25.0;       //v0=0.0;
-	static int max_spd_ini=1, jk_ini=0, brk_ini=0;
+	static int jk_ini=0, brk_ini=0;
     static float tg=0.0;
  
     /*--- Maneuver Coordination ---*/
@@ -585,6 +584,10 @@ int run_tasks(db_clt_typ *pclt, long_ctrl *pctrl, long_output_typ *pcmd)
 	int tmp_int;
 	static int f_torq_buff=0, f_radar_buff=0, f_lidar_buff=0, f_jake_buff=0, f_brk_buff=0, f_comm_buff=0;
 	static int cmd_count=0;
+	static float service_brk_t = 0.0, service_brk_stop_t = 0.0;
+
+
+
 
     int ctrl_interval;
 	
@@ -675,7 +678,8 @@ if(config.use_comm == TRUE)
    /***********************************************
                 GPS and Volvo Distanvce Sensors
    ************************************************/
-   
+
+#ifdef GPS_DIST   
 	//memcpy(pv->self_gps, &self_gps_point, sizeof(path_gps_point_t);
 	ego_gps = pv->self_gps;  /// read from self GPS unit
 
@@ -765,33 +769,35 @@ if ( (30.0< ego_gps.latitude && ego_gps.latitude < 45.0) &&
 		}		
 	}
 
-
 	veh_pos(gps_point[0], gps_point[1], gps_point[2], str_pos_pt, pltn_info_pt);
-	
-	
+		
 	//vehicle_info_pt-> veh_id=str_pos_pt->local_pos;
 	//if (ego_gps. heading < 180.0)  // out bound
 }	
+#endif
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	if (vehicle_info_pt-> veh_id == 1)
 	{
-		 config_pt->truck_ACC=TRUE;
+		  config_pt->truck_ACC=TRUE;
 		 config_pt-> truck_CACC=FALSE;	
-		 config_pt-> ACC_tGap=1.6;
+		 con_state_pt-> ACC_tGap=1.6;
 #ifdef DVI
 		 if (pv-> gap_request == 1)		
-			config_pt-> CACC_tGap=1.1;		 
+			con_state_pt-> ACC_tGap=1.1;		 
 		 else if (pv-> gap_request == 2)		 
-				config_pt-> CACC_tGap=1.3;		 
+				con_state_pt-> ACC_tGap=1.3;		 
 		 else if (pv-> gap_request == 3)		 			
-				config_pt-> CACC_tGap=1.5;		 
+				con_state_pt-> ACC_tGap=1.5;		 
 		 else if (pv-> gap_request == 4)
-			config_pt-> CACC_tGap=1.7;
+			con_state_pt-> ACC_tGap=1.7;
 		 else if (pv-> gap_request == 5)
-			config_pt-> CACC_tGap=1.9;
+			con_state_pt-> ACC_tGap=1.9;
 		 else		
-			config_pt-> CACC_tGap=1.6;	
+			con_state_pt-> ACC_tGap=1.6;	
 #endif		
 	}
 	else   // veh_id > 1
@@ -818,64 +824,63 @@ if ( (30.0< ego_gps.latitude && ego_gps.latitude < 45.0) &&
 		 config_pt->truck_CACC=TRUE;
 		 config_pt->truck_ACC=FALSE;
 		 if ((vehicle_info_pt-> cut_in) != 1)   // changed on 06_30_16
-			config_pt-> CACC_tGap=1.0;          // 1.1 //1.25
+			con_state_pt-> CACC_tGap=config_pt-> CACC_tGap;          // 1.1 //1.25
 		 else
-			config_pt-> CACC_tGap=1.4;	
+			con_state_pt-> CACC_tGap=1.6;	
 #endif
 
 #ifdef DVI
 		 if (pv-> gap_request == 1)
 		 {
 			if ((vehicle_info_pt-> cut_in) != 1)
-				config_pt-> CACC_tGap=0.6; 
+				con_state_pt-> CACC_tGap=0.6; 
 			else
-				config_pt-> CACC_tGap=1.4;
+				con_state_pt-> CACC_tGap=1.4;
 		 }
 		 else if (pv-> gap_request == 2)
 		 {
 			if ((vehicle_info_pt-> cut_in) != 1)
-				config_pt-> CACC_tGap=0.9; 
+				con_state_pt-> CACC_tGap=0.9; 
 			else
-				config_pt-> CACC_tGap=1.4;
+				con_state_pt-> CACC_tGap=1.4;
 		 }
 		 else if (pv-> gap_request == 3)
 		 {
 			if ((vehicle_info_pt-> cut_in) != 1)
-				config_pt-> CACC_tGap=1.2; 
+				con_state_pt-> CACC_tGap=1.2; 
 			else
-				config_pt-> CACC_tGap=1.4;
+				con_state_pt-> CACC_tGap=1.4;
 		 }
 		 else if (pv-> gap_request == 4)
-			config_pt-> CACC_tGap=1.5;
+			con_state_pt-> CACC_tGap=1.5;
 		 else if (pv-> gap_request == 5)
-			config_pt-> CACC_tGap=1.8;
+			con_state_pt-> CACC_tGap=1.8;
 		 else
 		 {
 			if ((vehicle_info_pt-> cut_in) != 1)   // changed on 06_30_16
-				config_pt-> CACC_tGap=1.2;          // 1.1 //1.25
+				con_state_pt-> CACC_tGap=1.2;          // 1.1 //1.25
 			else
-				config_pt-> CACC_tGap=1.4;	
+				con_state_pt-> CACC_tGap=1.4;	
 		 }
 #endif
 	}
-	
-	
-	if (max_spd_ini==1)
-	{		
-		if (config_pt->truck_ACC == TRUE)			
-			con_state. des_f_dist=(con_state_pt-> spd)*(config_pt-> ACC_tGap);
-		if (config_pt->truck_CACC == TRUE)			
-			con_state. des_f_dist=(con_state_pt-> spd)*(config_pt-> CACC_tGap);
-		max_spd_ini=0;
-		if (con_state. des_f_dist < DES_FOLLOW_DIST)
-			con_state. des_f_dist=DES_FOLLOW_DIST;
-		con_state_pt->ACC_tGap=config_pt-> ACC_tGap;
-		con_state_pt->CACC_tGap=config_pt-> CACC_tGap;
+
+
+    
+
+	if (vehicle_info_pt-> veh_id == 1)
+	{
+		 config_pt->truck_ACC=TRUE;
+		 config_pt-> truck_CACC=FALSE;			 
 	}
-
+	else
+	{
+		 config_pt-> truck_ACC=FALSE;
+		 config_pt-> truck_CACC=TRUE;			 
+	}
 	
 
-
+	
 	/**************************************
 	                      Timing               
 	**************************************/
@@ -966,8 +971,10 @@ read_sw(pv, sw_read_pt);
 	/*                                         */
 	/*******************************************/  
      
-     con_state_pt-> spd=jbus_read_pt-> v;	 
-     con_state_pt-> acc=jbus_read_pt-> long_accel;	 
+     con_state_pt-> spd=jbus_read_pt-> v;	
+	 //con_state_pt-> spd=sens_rd_pt->ego_v;
+     con_state_pt-> acc=jbus_read_pt-> long_accel;	
+	 //con_state_pt-> acc=sens_rd_pt->ego_a;
      con_state_pt-> fuel_rt= jbus_read_pt-> fuel_m;              
      con_state_pt-> auto_acc=jbus_read_pt-> long_accel;	
      con_state_pt-> auto_speed=jbus_read_pt-> v; 
@@ -988,6 +995,13 @@ read_sw(pv, sw_read_pt);
 	v=con_state_pt-> spd;
 	v_flt( dt, time_filter, v1, v2, v3, &v, f_index_pt);
 
+	
+	if (config_pt->truck_ACC == TRUE)			
+		con_state_pt-> des_f_dist=(con_state_pt-> spd)*(con_state_pt-> ACC_tGap);
+	if (config_pt->truck_CACC == TRUE)			
+		con_state_pt-> des_f_dist=(con_state_pt-> spd)*(con_state_pt-> CACC_tGap);
+	if (con_state_pt-> des_f_dist < DES_FOLLOW_DIST)
+		con_state_pt-> des_f_dist=DES_FOLLOW_DIST;
 
      /*---- Filtering Reference Signal ---*/
     
@@ -1146,13 +1160,7 @@ if( (config.handle_faults == TRUE) && (manager_cmd_pt-> drive_mode > 1))
     //     fprintf(stderr, " Calling DVI fail! \n");
                
     if (t_ctrl > 0.001)                                //  05/20/10                  
-    {
-		if (config_pt->truck_ACC == TRUE)
-			con_state_pt-> des_f_dist=(con_state_pt-> spd)*(config_pt->ACC_tGap);
-		if (config_pt->truck_CACC == TRUE)
-			con_state_pt-> des_f_dist=(con_state_pt-> spd)*(config_pt->CACC_tGap);
-		if (con_state. des_f_dist < DES_FOLLOW_DIST)
-			con_state. des_f_dist=DES_FOLLOW_DIST;
+    {		
      
         if (coording(dt, track_length, con_state_pt, sens_read_pt, jbus_read_pt, config_pt, sw_read_pt, f_mode_comm_pt, vehicle_info_pt, pltn_info_pt, manager_cmd_pt) != 1)				
            fprintf(stderr, "\n Calling Coordination fail! \n");			      
@@ -1161,7 +1169,7 @@ if( (config.handle_faults == TRUE) && (manager_cmd_pt-> drive_mode > 1))
 	//	   manager_cmd_pt-> man_des=29;  
 
        if ( maneuver(dt, t_ctrl, time_filter, v_p, c, d, road_info_pt, config_pt, con_state_pt, sens_read_pt, sw_read_pt, vehicle_info_pt,  // time filter removed on 05_22_11
-                 f_index_pt, maneuver_id, manager_cmd_pt, pltn_info_pt) != 1 )
+                 f_index_pt, maneuver_id, manager_cmd_pt, pltn_info_pt, jbus_read_pt) != 1 )
             fprintf(stderr, " Calling maneuver fail! \n");                
     } 
 
@@ -1270,23 +1278,11 @@ if (manager_cmd_pt-> auto_contr == ON)
 		pcmd->engine_retarder_command_mode = XBR_NOT_ACTIVE;    
 		pcmd->engine_retarder_torque=-0.0;
 		pcmd->brake_command_mode = XBR_ACTIVE; 		  	   
-		pcmd->brake_priority=TSC_HIGHEST;
+		pcmd->brake_priority=TSC_HIGH;
 		pcmd->ebs_deceleration = min_f(-1.2, 1.05*(comm_receive_pt[1].accel));  
+		//if (pcmd->ebs_deceleration < -1.2)
+		//	pcmd->ebs_deceleration = -1.2;
 	}
-	/*if (comm_receive_pt[1].rate < -0.5)  // automatic control with ebs_deceleration
-	{
-		pcmd->engine_command_mode = XBR_NOT_ACTIVE;   		
-		pcmd->brake_command_mode = XBR_ACTIVE; 		  	   
-		pcmd->brake_priority=TSC_HIGHEST;
-		pcmd->ebs_deceleration = comm_receive_pt[1].rate-0.1;  
-		pcmd->engine_retarder_command_mode = XBR_ACTIVE; 
-		pcmd->engine_retarder_priority=TSC_HIGHEST; 
-		pcmd->engine_retarder_torque =  comm_receive_pt[1].user_float1;
-		if (cmd_count == 10)
-			    pcmd->engine_retarder_torque =  pcmd->engine_retarder_torque + 1.0;
-		if (cmd_count == 20)
-			    pcmd->engine_retarder_torque =  pcmd->engine_retarder_torque - 1.0;
-	}	*/
  }
 
  if (vehicle_info_pt-> veh_id == 3)
@@ -1299,26 +1295,15 @@ if (manager_cmd_pt-> auto_contr == ON)
 		pcmd->engine_retarder_command_mode = XBR_NOT_ACTIVE;   
 		pcmd->engine_retarder_torque=-0.0;
 		pcmd->brake_command_mode = XBR_ACTIVE; 		  	   
-		pcmd->brake_priority=TSC_HIGHEST;
+		pcmd->brake_priority=TSC_HIGH;
 		pcmd->ebs_deceleration = min_f(-1.2, 1.05*(comm_receive_pt[1].accel)); 
 		pcmd->ebs_deceleration = min_f(pcmd->ebs_deceleration, 1.05*(comm_receive_pt[2].accel));
+		//if (pcmd->ebs_deceleration < -1.2)
+		//	pcmd->ebs_deceleration = -1.2;
 	}
-	/*if ((comm_receive_pt[1].rate < -0.5) || (comm_receive_pt[2].rate < -0.5) )  // automatic control; with ebs_deceleration
-	{
-		pcmd->engine_command_mode = XBR_NOT_ACTIVE;   	
-		pcmd->engine_retarder_command_mode = XBR_NOT_ACTIVE;           
-		pcmd->brake_command_mode = XBR_ACTIVE; 		  	   
-		pcmd->brake_priority=TSC_HIGHEST;
-		pcmd->ebs_deceleration = min_f(comm_receive_pt[1].rate-0.1, comm_receive_pt[2].rate-0.1);  
-		pcmd->engine_retarder_command_mode = XBR_ACTIVE; 
-		pcmd->engine_retarder_priority=TSC_HIGHEST; 
-		pcmd->engine_retarder_torque =  min_f(comm_receive_pt[1].user_float1, comm_receive_pt[2].user_float1);
-		if (cmd_count == 10)
-			    pcmd->engine_retarder_torque =  pcmd->engine_retarder_torque + 1.0;
-		if (cmd_count == 20)
-			    pcmd->engine_retarder_torque =  pcmd->engine_retarder_torque - 1.0;
-	}*/
+	
  }
+
 }
 else
 {
@@ -1337,16 +1322,7 @@ else
 if(config.use_comm == TRUE) 
 {
       comm_send_pt.global_time = local_time;  // Each vehicle has a local time to broadcast. 
-	  /*if (vehicle_info_pt-> veh_id == 1 && f_index_pt-> torq == 1 )
-	  {
-		comm_send_pt.vel_traj = min_f(con_state_pt-> ref_v, sens_read_pt->ego_v);   // composite	 
-		comm_send_pt.acc_traj = min_f(con_state_pt-> ref_a, sens_read_pt->ego_a);    // composite   
-	  }
-	  else
-	  {
-		  comm_send_pt.vel_traj = con_state_pt-> ref_v;   // composite	 
-		  comm_send_pt.acc_traj = con_state_pt-> ref_a;    // composite   
-	  }*/
+	 
       comm_send_pt.vel_traj = sens_read_pt->ego_v;   // composite	             // changed on 06_10_16 
 	  comm_send_pt.acc_traj = sens_read_pt->ego_a;    // composite  
 
@@ -1665,7 +1641,7 @@ if( config.run_data == TRUE ) {
              con_output_pt-> y10,						//44
              con_output_pt-> y11,   // usyn				//45		           
              con_output_pt-> y12,   // jk				//46
-			 //con_output_pt-> y13,   // pb_s2_b			//47 
+			 //con_output_pt-> y13,   // pb_s2_b		//47 
 			 con_output_pt-> y15,     
              con_output_pt-> y14,   // brk				//48 
 			 con_output_pt-> y16, 
@@ -1689,10 +1665,12 @@ if( config.run_data == TRUE ) {
         fprintf(pout, "%3i %3i %3i %4.3f %4.3f %4.3f %4.3f %4.3f ",
              manager_cmd_pt-> trans_mode,		//62                            
 			 manager_cmd_pt-> auto_contr,		//63
-             sw_read_pt-> gshift_sw,			//64            
+             //sw_read_pt-> gshift_sw,			//64    
+			 con_state_pt-> join,
              jbus_read_pt-> gear,				//65                   
              pcmd->ebs_deceleration,			//66               
-             jbus_read_pt-> bp,					//67                   
+             //jbus_read_pt-> bp,					//67       
+			 con_state_pt-> wt_factor,			//67   
              jbus_read_pt-> we,					//68              
 			 con_state_pt-> front_range			//69			
         );      
@@ -1718,7 +1696,7 @@ if( config.run_data == TRUE ) {
 
 	  fprintf(pout, "%4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f ", 
 		    jbus_read_pt->  brk_pres,			//86
-			pv-> VP15_RoadInclinationVP15,		//87
+			pv-> VP15_RoadInclinationVP15,		//87   // crude est
 			pv-> VP15_VehicleWeightVP15,		//88
 			pv-> Volvo_TargetDist,				//89
 			pv-> Volvo_TargetVel,				//90
@@ -1726,15 +1704,19 @@ if( config.run_data == TRUE ) {
 			pv-> Volvo_TargetAvailable,			//92
 			pv-> Volvo_EgoVel,					//93
 			pv-> Volvo_EgoAcc,					//94
-			pv-> Volvo_EgoRoadGrade);			//95
+			pv-> Volvo_EgoRoadGrade);			//95   // better measurement
 	  fprintf(pout, "%3i %3i %3i %4.3f %4.3f",
-		    str_pos_pt->local_pos[0],			//96
+		    //str_pos_pt->local_pos[0],			//96
 			//str_pos_pt->local_pos[1],			//97
 			//str_pos_pt->local_pos[2],			//98
-		    pv-> acc_cacc_request,
-			pv-> gap_request,
+			con_output_pt-> con_sw_1,			//96
+			con_output_pt-> con_sw_3,			//97
+			con_output_pt-> con_sw_5,			//98
+		    //pv-> acc_cacc_request,
+			//pv-> gap_request,
 		    str_pos_pt->ave_heading,			//99
-			str_pos_pt->gps_dist_pre);			//100
+			config_pt-> CACC_tGap);
+			//str_pos_pt->gps_dist_pre);			//100
 
 }
 
