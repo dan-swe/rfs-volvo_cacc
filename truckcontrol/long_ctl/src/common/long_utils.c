@@ -539,6 +539,8 @@ void long_update_fields_from_dbv(int db_num, long_vehicle_state *pstate,
 		pstate->TSC1_EMS_ACC_EnOvrdCtrlM = ptsc1_e_acc->EnOvrdCtrlM;
 		pstate->TSC1_EMS_ACC_EnRSpdSpdLm = ptsc1_e_acc->EnRSpdSpdLm; 
 		pstate->TSC1_EMS_ACC_EnRTrqTrqLm = ptsc1_e_acc->EnRTrqTrqLm;
+		pstate->TSC1_EMS_ACC_destination_address = ptsc1_e_acc->destination_address;
+		pstate->TSC1_EMS_ACC_src_address = ptsc1_e_acc->src_address;
 		break;
 	case DB_J1939_TSC1_ER_T_VAR:
 		ptsc1_er_t = (j1939_tsc1_typ *) pdata_val;
