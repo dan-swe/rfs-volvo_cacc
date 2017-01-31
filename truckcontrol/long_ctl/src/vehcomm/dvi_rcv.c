@@ -60,7 +60,7 @@ int main( int argc, char *argv[] )
 	dvi_out_t dvi_out;
 	float ts = 0;
 	float ts_sav = 0;
-	char gap_level = 0;
+	char gap_level = 3;
 
 	int sd;				/// socket descriptor
 	int udp_port = 8003;
@@ -117,6 +117,9 @@ int main( int argc, char *argv[] )
 		longjmp(exit_env, 2);
 	}
 
+	dvi_out.acc_cacc_request = 0;
+	dvi_out.gap_request = gap_level;
+	db_clt_write(pclt, DB_DVI_OUT_VAR, sizeof(dvi_out_t), &dvi_out);
 
 	while (1) {
                 if ((bytes_received = recvfrom(sd, &buf, 1, 0, (struct sockaddr *) &src_addr, (socklen_t *) &socklen)) <= 0) {
@@ -132,18 +135,15 @@ int main( int argc, char *argv[] )
 			switch(buf){
 				case ACC_REQUESTED:
 					dvi_out.acc_cacc_request = 1;
-					dvi_out.gap_request = 0;
 					break;
 				case CACC_REQUESTED:
 					dvi_out.acc_cacc_request = 2;
-					dvi_out.gap_request = 0;
 					break;
 				case GAP_DECREASE_REQUESTED:
 					if( (ts - ts_sav) > 0.2)
-						if( (gap_level--) < 0)
-							gap_level = 0;
+						if( (gap_level--) < 1)
+							gap_level = 1;
 					ts_sav = ts;
-					dvi_out.acc_cacc_request = 0;
 					dvi_out.gap_request = gap_level;
 					break;
 				case GAP_INCREASE_REQUESTED:
@@ -151,7 +151,6 @@ int main( int argc, char *argv[] )
 						if( (gap_level++) > 5)
 							gap_level = 5;
 					ts_sav = ts;
-					dvi_out.acc_cacc_request = 0;
 					dvi_out.gap_request = gap_level;
 					break;
 			}
