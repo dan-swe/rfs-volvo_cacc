@@ -165,6 +165,9 @@ int main( int argc, char *argv[] )
 	char *engine_debug_buf = (char *)&engine_debug;
 	can_debug_t engine_retarder_debug;
 	char *engine_retarder_debug_buf = (char *)&engine_retarder_debug;
+	long_output_typ ctrl;
+	can_torque_t can_torque;
+	char *can_torque_debug_buf = (char *)&can_torque;
 	int i;
 
 	get_local_name(hostname, MAXHOSTNAMELEN);
@@ -232,6 +235,10 @@ int main( int argc, char *argv[] )
 		db_clt_read(pclt, gps_db_num, sizeof(path_gps_point_t), &hb76);
 		db_clt_read(pclt, DB_ENGINE_DEBUG_VAR, sizeof(can_debug_t), &engine_debug);
 		db_clt_read(pclt, DB_ENGINE_RETARDER_DEBUG_VAR, sizeof(can_debug_t), &engine_retarder_debug);
+		db_clt_read(pclt, DB_LONG_OUTPUT_VAR, sizeof(long_output_typ), &ctrl);
+		can_torque.can_debug_pdu = 0x0018;
+		can_torque.engine_torque = ctrl.engine_torque;
+		can_torque.engine_retarder_torque = ctrl.engine_retarder_torque;
 		if(use_can) {
 			update_gps_position(&hb74, buf74);
 			printf("lat %f long %f\n", hb74.latitude, hb74.longitude);
@@ -252,13 +259,22 @@ int main( int argc, char *argv[] )
 			can_write(gps_fd, 0x15, 0, buf76, 8);
 			can_write(gps_fd, 0x16, 0, &engine_debug, 7);
 			can_write(gps_fd, 0x17, 0, &engine_retarder_debug, 7);
+			can_torque.can_debug_pdu = 0x0018;
+			can_torque.engine_torque = ctrl.engine_torque;
+			can_torque.engine_retarder_torque = ctrl.engine_retarder_torque;
+			can_write(gps_fd, 0x18, 0, &can_torque, 8);
 			printf("Engine_debug: ");
 			for(i=0; i<sizeof(can_debug_t); i++)
 				printf("%#hhx ", engine_debug_buf[i]);
-				printf("\n");
+				printf(" ");
 			printf("Engine_retarder_debug: ");
 			for(i=0; i<sizeof(can_debug_t); i++)
 				printf("%#hhx ", engine_retarder_debug_buf[i]);
+				printf(" ");
+			printf("can_torque_debug: ");
+			for(i=0; i<sizeof(can_torque_t); i++)
+				printf("%#hhx ", can_torque_debug_buf[i]);
+				printf("eng: %f retarder: %f", can_torque.engine_torque, can_torque.engine_retarder_torque);
 				printf("\n");
 		}
 		/* Now wait for proxy from timer */

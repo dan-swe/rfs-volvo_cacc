@@ -72,3 +72,8 @@ typedef struct {
         unsigned int ret :1, :5;
 } IS_PACKED can_debug_t;
 
+typedef struct {
+        unsigned short can_debug_pdu; // =0x0018 for floating point engine and engine retarder
+	float engine_torque;
+	float engine_retarder_torque;
+} IS_PACKED can_torque_t;
