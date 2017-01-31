@@ -2,6 +2,7 @@
 #
 # Script to run device drivers and longitudinal control code
 
+NOCOMM=$1
 TEST_DIR=/home/truckcontrol/test
 CAN_CLIENT_DIR=/home/can/jbus/src/qnx
 CAN_DRIVER_DIR=/home/can/drv_sja1000/qnx
@@ -78,13 +79,18 @@ CAN_DRIVER_DIR=/home/can/drv_sja1000/qnx
 	$TEST_DIR/gpsdb -n $GPSDBNUM -d1 </dev/ser1 >/big/data/gpsdb_$DATESTR.dbg &
 	sleep 1
 	/home/truckcontrol/test/trk_wr -t 100 1>/big/data/trk_wr_$DATESTR.txt 2>/big/data/trk_wr.err &
-	sleep 1
-	$TEST_DIR/veh_snd -v -i 100 -A $IPADDR -a $ITRIADDR -u 15041 -t $TRUCK >/big/data/veh_snd_$DATESTR.dbg &
-	sleep 1
-	$TEST_DIR/veh_rcv -f $CONFIG_FILE -v -A $IPADDR -a $ITRIADDR -u 15042 -t $TRUCK >/big/data/veh_rcv_$DATESTR.dbg &
-	sleep 1
-	$TEST_DIR/dvi_rcv -u 8003 -a $GALAXYWIRELESS -A $IPADDR >/big/data/dvi_rcv_$DATESTR.dbg &
-	sleep 1
-	$TEST_DIR/dvi_snd -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR >/big/data/dvi_snd_$DATESTR.dbg &
+
+	echo $NOCOMM | grep "no_communication"
+	if [[ $? -ne 0 ]]
+	then
+		sleep 1
+		$TEST_DIR/veh_snd -v -i 100 -A $IPADDR -a $ITRIADDR -u 15041 -t $TRUCK >/big/data/veh_snd_$DATESTR.dbg &
+		sleep 1
+		$TEST_DIR/veh_rcv -f $CONFIG_FILE -v -A $IPADDR -a $ITRIADDR -u 15042 -t $TRUCK >/big/data/veh_rcv_$DATESTR.dbg &
+		sleep 1
+		$TEST_DIR/dvi_rcv -u 8003 -a $GALAXYWIRELESS -A $IPADDR >/big/data/dvi_rcv_$DATESTR.dbg &
+		sleep 1
+		$TEST_DIR/dvi_snd -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR >/big/data/dvi_snd_$DATESTR.dbg &
+	fi
 
 	nice --2 $TEST_DIR/long_trk -v long_trk -f $TEST_DIR/realtime.ini -o test_`cat /big/data/last_start_timestamp.txt` -r 1 >/big/data/long_trk.log 2>/big/data/long_trk.err &
