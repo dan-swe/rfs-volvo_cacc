@@ -887,22 +887,62 @@ int main( int argc, char *argv[] )
 				if (can_send) {
 					if (i == JBUS_SEND_ENGINE_SRC_ACC) {
 						(pm->cmd_to_pdu)(&pdu, &cmd->cmd.tsc1);	
-/*
-						printf("jbussend: Got to 5.5 %d millisec src_address %#hhx dest address %#hhx loop num %d\n",
-							cmd->last_time.millitm,
+						printf("jbussend: Got to 1 src_address %#hhx dest address %#hhx EnRTrqTrqLm %.3f ctrl.engine_torque %.3f pdu %d retarder %.3f ",
 							cmd->cmd.tsc1.src_address,
 							cmd->cmd.tsc1.destination_address,
+							cmd->cmd.tsc1.EnRTrqTrqLm,
+							ctrl.engine_torque,
+							pdu.data_field[3] - 125,
+							ctrl.engine_retarder_torque
+						);
+						printf("millisec %d loop num %d\n",
+							cmd->last_time.millitm,
 							loop_number
 						);
-*/
+/*
+						printf("jbussend: Got to 1 src_address %#hhx dest address %#hhx EnOvrdCtrlMPr #%hhx EnRSpdCtrlC %#hhx EnOvrdCtrlM %#hhx EnRSpdSpdLm %.3f EnRTrqTrqLm %.3f ",
+							cmd->cmd.tsc1.src_address,
+							cmd->cmd.tsc1.destination_address,
+							cmd->cmd.tsc1.EnOvrdCtrlMPr,
+							cmd->cmd.tsc1.EnRSpdCtrlC,
+							cmd->cmd.tsc1.EnOvrdCtrlM,
+							cmd->cmd.tsc1.EnRSpdSpdLm,
+							cmd->cmd.tsc1.EnRTrqTrqLm
+						);
+						printf("millisec %d loop num %d\n",
+							cmd->last_time.millitm,
+							loop_number
+						);
+
 					}
 					if (i == JBUS_SEND_ENGINE_RETARDER_SRC_ACC) {
 						(pm->cmd_to_pdu)(&pdu, &cmd->cmd.tsc1);	
-/*
-						printf("jbussend: Got to 5.5 %d millisec src_address %#hhx dest address %#hhx \n",
-							cmd->last_time.millitm,
+
+						printf("jbussend: Got to 1 src_address %#hhx dest address %#hhx EnRTrqTrqLm %.3f ctrl.engine_torque %.3f pdu %d retarder %.3f ",
 							cmd->cmd.tsc1.src_address,
-							cmd->cmd.tsc1.destination_address
+							cmd->cmd.tsc1.destination_address,
+							cmd->cmd.tsc1.EnRTrqTrqLm,
+							ctrl.engine_torque,
+							pdu.data_field[3] - 125,
+							ctrl.engine_retarder_torque
+						);
+						printf("millisec %d loop num %d\n",
+							cmd->last_time.millitm,
+							loop_number
+						);
+/*
+						printf("jbussend: Got to 2 src_address %#hhx dest address %#hhx EnOvrdCtrlMPr #%hhx EnRSpdCtrlC %#hhx EnOvrdCtrlM %#hhx EnRSpdSpdLm %.3f EnRTrqTrqLm %.3f ",
+							cmd->cmd.tsc1.src_address,
+							cmd->cmd.tsc1.destination_address,
+							cmd->cmd.tsc1.EnOvrdCtrlMPr,
+							cmd->cmd.tsc1.EnRSpdCtrlC,
+							cmd->cmd.tsc1.EnOvrdCtrlM,
+							cmd->cmd.tsc1.EnRSpdSpdLm,
+							cmd->cmd.tsc1.EnRTrqTrqLm
+						);
+						printf("millisec %d loop num %d\n",
+							cmd->last_time.millitm,
+							loop_number
 						);
 */
 					}
