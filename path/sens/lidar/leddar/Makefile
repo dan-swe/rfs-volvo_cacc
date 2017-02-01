@@ -4,7 +4,8 @@ PATH_OBJS += $(OBJDIR)/Leddar.o $(OBJDIR)/Modbus.o $(OBJDIR)/OS.o
 #PATH_LIBS += -lLeddarC
 #PATH_LDFLAGS += -LLeddarSDK3.2.0_x86/Release
 
-EXEC = $(OBJDIR)/Rs485Demo $(OBJDIR)/leddar
+#EXEC = $(OBJDIR)/Rs485Demo $(OBJDIR)/leddar
+EXEC = $(OBJDIR)/leddar
 
 all: $(OBJDIR) $(PATH_OBJS) $(EXEC)
 
