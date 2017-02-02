@@ -59,21 +59,6 @@ int db_trig_list[] = {
 
 #define NUM_TRIG_VARS     sizeof(db_trig_list)/sizeof(int)
 
-/* Set the vehicle string as the object identifier in the
- * GPS point structure within the packet being sent.
- */ 
-void set_vehicle_string(veh_comm_packet_t *pvcp, char * vehicle_str)
-{
-	/** GPS_OBJECT_ID_SIZE is only 6, "Blue" and "Gold" will
-	 *  work, "Silver" will be shortened 
-	 */
-	strncpy(&pvcp->object_id[0], vehicle_str, GPS_OBJECT_ID_SIZE);
-	
-	/// make sure string is terminated
-	pvcp->object_id[GPS_OBJECT_ID_SIZE - 1] = '\0';
-}
-
-
 int main(int argc, char *argv[])
 {
 	int ch;		
@@ -82,12 +67,14 @@ int main(int argc, char *argv[])
         char hostname[MAXHOSTNAMELEN+1];
         int xport = COMM_OS_XPORT;
 	trig_info_typ trig_info;
-	int recv_type;
 
 	int sd;				/// socket descriptor
 	int sd2;				/// socket descriptor
+	int i;
 	struct SeretUdpStruct dvi_out;
+	char *dvi_out_array = (char *)&dvi_out;
 	struct ExtraDataCACCStruct egodata;
+	char *egodata_array = (char *)&egodata;
 	char db_dvi_rcv = -1;
 	veh_comm_packet_t comm_pkt1;
 	veh_comm_packet_t comm_pkt2;
@@ -107,7 +94,6 @@ int main(int argc, char *argv[])
 	short unsigned remote_port2 = 10005;
 	struct sockaddr_in dst_addr;
 	struct sockaddr_in dst_addr2;
-	char *vehicle_str = "VNL475";
 	posix_timer_typ *ptmr;
 	int interval = 50;	/// milliseconds
 	int counter = 0;
@@ -122,15 +108,13 @@ int main(int argc, char *argv[])
 	memset(&dvi_out, 0, sizeof(struct SeretUdpStruct));
 	memset(&egodata, 0, sizeof(struct ExtraDataCACCStruct));
 
-        while ((ch = getopt(argc, argv, "A:a:i:t:C:cr:R:vP:E:d")) != EOF) {
+        while ((ch = getopt(argc, argv, "A:a:i:C:cr:R:vP:E:d")) != EOF) {
                 switch (ch) {
 		case 'A': local_ipaddr = strdup(optarg);
 			  break;
 		case 'a': remote_ipaddr= strdup(optarg);
 			  break;
 		case 'i': interval = atoi(optarg);
-			  break;
-		case 't': vehicle_str = strdup(optarg);
 			  break;
 		case 'C': counter = atoi(optarg); 
 			  break;
@@ -225,7 +209,12 @@ int main(int argc, char *argv[])
 					ntohl(dst_addr.sin_addr.s_addr));
 					fflush(stdout);
 				}
-printf("bytes_sent1 %d\n", bytes_sent);
+				if(verbose) {
+					printf("bytes_sent1 %d\n", bytes_sent);
+					for(i=0; i<bytes_sent; i++)
+						printf("%#hhx ", dvi_out_array[i]);
+					printf("\n");
+				}
 			}
 
 			if(!no_send2) {
@@ -239,7 +228,12 @@ printf("bytes_sent1 %d\n", bytes_sent);
 					ntohl(dst_addr2.sin_addr.s_addr));
 					fflush(stdout);
 				}
-printf("bytes_sent2 %d\n", bytes_sent);
+				if(verbose) {
+					printf("bytes_sent2 %d\n", bytes_sent);
+					for(i=0; i<bytes_sent; i++)
+						printf("%#hhx ", egodata_array[i]);
+					printf("\n");
+				}
 			}
 			TIMER_WAIT(ptmr);
 		}
@@ -280,7 +274,7 @@ printf("bytes_sent2 %d\n", bytes_sent);
 	get_current_timestamp(&comm_pkt3_ts_sav);
 
 	while (1) {
-		recv_type= clt_ipc_receive(pclt, &trig_info, sizeof(trig_info));
+		clt_ipc_receive(pclt, &trig_info, sizeof(trig_info));
 
 		if(DB_TRIG_VAR(&trig_info) == DB_COMM_TX_VAR) {
 	                db_clt_read(pclt, DB_COMM_TX_VAR, sizeof(veh_comm_packet_t), &self_comm_pkt);
