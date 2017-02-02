@@ -1,5 +1,5 @@
-scp rfs-volvo_cacc.tgz vnl474:/home
-ssh vnl474
+#scp rfs-volvo_cacc.tgz vnl474:/home
+#ssh vnl474
 cd /home
 rm -rf *old
 mv can can.old
@@ -12,9 +12,6 @@ cd ../path
 make clean && make
 cd ../can
 make clean && make
-su
-./setuid
-exit
 cd ../truckcontrol
 make clean && make && make install
 trk
@@ -27,5 +24,5 @@ xyl
 make clean && make install
 
 
-Set PC104 ip addresses to 172.16.0.7[456] in config.ini for PATH2016 app on tablets
-Set tablet ip addresses to 172.16.0.17[456] for TNL-47[456] APs in the wireless configuration on 2 tablets per truck
+#Set PC104 ip addresses to 172.16.0.7[456] in config.ini for PATH2016 app on tablets
+#Set tablet ip addresses to 172.16.0.17[456] for TNL-47[456] APs in the wireless configuration on 2 tablets per truck
