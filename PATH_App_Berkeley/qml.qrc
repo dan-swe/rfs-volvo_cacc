@@ -4,6 +4,7 @@
         <file>TruckString.qml</file>
         <file>Images/background.png</file>
         <file>ButtonStandard.qml</file>
+        <file>ButtonStandard2.qml</file>
         <file>TruckStringInfo.qml</file>
         <file>Images/destination.png</file>
         <file>Images/ratingStar.png</file>

@@ -11,7 +11,7 @@ udpExtraDataCACC::udpExtraDataCACC(QObject *parent) : QObject(parent)
     setCACCDegraded(0);
     setCACCActiveConnectionToTarget(0);
     setCACCActiveConnectionFromTarget(0);
-    setTimeGapActive(0);
+//    setTimeGapActive(0);
     setCACCTimeGap(0);
     setACCTimeGap(0);
     setCACCEvents(0);

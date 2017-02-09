@@ -7,11 +7,11 @@ Item {
     width:130
     height:(stringRow.truckHeight+stringRow.spacing)*numberOfTrucks + 80
 
-  /*  property var stringData:[
-        {"ID":0,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false},
-        {"ID":1,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false},
-        {"ID":2,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false}
-    ]*/
+    property var stringData:[
+        {"ID":0,"Type":0,"Destination":"","Intruder":false,"isBraking":false},
+        {"ID":1,"Type":0,"Destination":"","Intruder":false,"isBraking":false},
+        {"ID":2,"Type":0,"Destination":"","Intruder":false,"isBraking":false}
+    ]
 
 
     function recreateStringData(newData){
