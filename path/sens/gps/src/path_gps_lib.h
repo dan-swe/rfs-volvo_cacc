@@ -10,6 +10,8 @@
 
 #ifndef GPS_LIB_H
 #define GPS_LIB_H
+#include <sys_os.h>
+#include <timestamp.h>
 
 #define MAX_GPS_SENTENCE 256
 #define MAX_GPS_FIELD 64
@@ -135,6 +137,7 @@ typedef struct {
 	float altitude;	        // in meters, +/-
 	double speed;		// in meters/sec
 	timestamp_t utc_time;	// from GPS
+	double utc_seconds_since_midnight;	// calcualted from GPS
 	timestamp_t local_time;	// from computer clock
 	int date;		// DDMMYY number form
 	float heading;		// course made good, true north
@@ -254,5 +257,5 @@ extern void path_gps_latlong2xy(path_gps_point_t *pt, path_gps_point_t origin,
 extern void path_gps_xy2latlong(double *xin, double *yin, 
 				path_gps_point_t origin, 
 				path_gps_point_t *pts_out, int n);
-
+extern time_t gps_utc2sec_epoch(timestamp_t utc_time, int date_of_fix);
 #endif
