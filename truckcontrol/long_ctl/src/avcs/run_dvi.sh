@@ -1,11 +1,16 @@
 #!/bin/sh
 
-IPADDR=`ifconfig | grep 172.16.0 | awk '{print $2}'`
-
-echo $IPADDR | grep : 
+uname -s | grep Linux
 if [ $? -eq 0 ]
 then
-	IPADDR=`echo $IPADDR | sed 's/:/ /g' | awk '{print $2}'`
+	OBJDIR=lnx
+	IPADDR=`ifconfig | grep 172.16.0 | sed '{s/:/ /g}' | awk '{print $3}'`
+fi
+uname -s | grep QNX
+if [ $? -eq 0 ]
+then
+	OBJDIR=qnx
+	IPADDR=`ifconfig | grep 172.16.0 | awk '{print $2}'`
 fi
 
 echo $IPADDR | grep 75 
@@ -44,25 +49,154 @@ then
 	TRUCK=Silvr
 fi
 
-uname -s | grep Linux
-if [ $? -eq 0 ]
-then
-	OBJDIR=lnx
-fi
-uname -s | grep QNX
-if [ $? -eq 0 ]
-then
-	OBJDIR=qnx
-fi
+echo "Turning on startup screen"
+../vehcomm/$OBJDIR/dvi_snd -c -C 20 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 1 0 0 0 0 0 0" -P "0 1 0 0 0 1 0 0 1 1 1 0 0 0 "
+sleep 1
+echo "ACC, ego truck 1, no target, no cutin, no braking"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 0 0 0 0 0 0 0 0 0" -P "2 0 0 0 0 1 0 0 0 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 1, no target, with cutin, no braking"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 0 0 0 0 0 0 0 0 0" -P "2 0 0 0 0 1 1 0 0 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 1, no target, with cutin, with braking"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 0 0 0 0 0 0 0 0 0" -P "2 0 0 0 0 1 1 1 0 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 1, with target, no cutin, no braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 0 0 0 0" -P "2 0 0 0 0 1 0 0 0 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 1, with target, no cutin, no braking, gap level 1"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 1 0 0 0" -P "2 0 0 0 0 1 0 0 0 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 1, with target, no cutin, no braking, gap level 2"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 2 0 0 0" -P "2 0 0 0 0 1 0 0 0 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 1, with target, no cutin, no braking, gap level 3"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 3 0 0 0" -P "2 0 0 0 0 1 0 0 0 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 1, with target, no cutin, no braking, gap level 4"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 4 0 0 0" -P "2 0 0 0 0 1 0 0 0 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 2, no target, no cutin, no braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 0 0 0 0 0 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 2, no target, with cutin, no braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 0 0 0 0 0 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 1 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 2, no target, with cutin, with braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 0 0 0 0 0 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 1 1 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 2, with target, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 2, with target, gap level 1"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 1 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 2, with target, gap level 2"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 2 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 2, with target, gap level 3"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 3 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 2, with target, gap level 4"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 4 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 " 
+msleep 500
+echo "ACC, ego truck 3, no target, no cutin, no braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 0 0 0 0 0 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+msleep 500
+echo "ACC, ego truck 3, no target, with cutin, no braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 0 0 0 0 0 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 1 0 " 
+msleep 500
+echo "ACC, ego truck 3, no target, with cutin, with braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 0 0 0 0 0 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 1 1 " 
+msleep 500
+echo "ACC, ego truck 3, with target, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+msleep 500
+echo "ACC, ego truck 3, with target, gap level 1"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 1 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+msleep 500
+echo "ACC, ego truck 3, with target, gap level 2"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 2 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+msleep 500
+echo "ACC, ego truck 3, with target, gap level 3"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 3 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+msleep 500
+echo "ACC, ego truck 3, with target, gap level 4"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 4 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+msleep 500
 
+
+echo "CACC, ego truck 1, no target, no cutin, no braking"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 0 0 0 0 0 0 0" -P "2 0 0 0 0 1 0 0 0 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 1, no target, with cutin, no braking"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 0 0 0 0 0 0 0" -P "2 0 0 0 0 1 1 0 0 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 1, no target, with cutin, with braking"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 0 0 0 0 0 0 0" -P "2 0 0 0 0 1 1 1 0 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 1, with target, no cutin, no braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 0 0 0 0 0" -P "2 0 0 0 0 1 0 0 0 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 1, with target, no cutin, no braking, gap level 1"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 1 0 0 0 0" -P "2 0 0 0 0 1 0 0 0 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 1, with target, no cutin, no braking, gap level 2"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 2 0 0 0 0" -P "2 0 0 0 0 1 0 0 0 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 1, with target, no cutin, no braking, gap level 3"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 3 0 0 0 0" -P "2 0 0 0 0 1 0 0 0 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 1, with target, no cutin, no braking, gap level 4"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "2 0 0 0 0 1 0 0 0 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 2, no target, no cutin, no braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 0 0 0 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 2, no target, with cutin, no braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 0 0 0 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 1 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 2, no target, with cutin, with braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 0 0 0 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 1 1 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 2, with target, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 0 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 2, with target, gap level 1"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 1 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 2, with target, gap level 2"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 2 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 2, with target, gap level 3"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 3 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 2, with target, gap level 4"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 " 
+msleep 500
+echo "CACC, ego truck 3, no target, no cutin, no braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 0 0 0 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+msleep 500
+echo "CACC, ego truck 3, no target, with cutin, no braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 0 0 0 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 1 0 " 
+msleep 500
+echo "CACC, ego truck 3, no target, with cutin, with braking, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 0 0 0 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 1 1 " 
+msleep 500
+echo "CACC, ego truck 3, with target, gap level 0"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 0 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+msleep 500
+echo "CACC, ego truck 3, with target, gap level 1"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 1 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+msleep 500
+echo "CACC, ego truck 3, with target, gap level 2"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 2 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+msleep 500
+echo "CACC, ego truck 3, with target, gap level 3"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 3 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+msleep 500
+echo "CACC, ego truck 3, with target, gap level 4"
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+sleep 1
 echo "Turning on startup screen"
-../vehcomm/$OBJDIR/dvi_snd -c -C 20 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 1 0 0 0 0 0 0" -P "0 1 0 0 0 1 0 0 1 1 1 0 0 0 "
-sleep 1
-echo "Turning on ACC screen"
-../vehcomm/$OBJDIR/dvi_snd -c -C 20 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 1 0 0 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 1 1 0 0 0 "
-sleep 1
-echo "Turning on CACC screen"
-../vehcomm/$OBJDIR/dvi_snd -c -C 20 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 0 0 1 0 0 0 0 0 0" -P "2 1 0 0 0 1 0 0 1 0 0 0 0 0 "
-sleep 1
-echo "Turning on startup screen"
-../vehcomm/$OBJDIR/dvi_snd -c -C 20 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 1 0 0 0 0 0 0" -P "0 1 0 0 0 1 0 0 1 1 1 0 0 0 "
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 1 0 0 0 0 0 0" -P "0 1 0 0 0 1 0 0 1 1 1 0 0 0 "
