@@ -63,6 +63,9 @@ int vehcomm2BSM(BSMCACC_t *BSMCACC, veh_comm_packet_t *comm_pkt) {
 	BSMCACC->blob1.accelSet.longAcc = (int)(comm_pkt->accel * BSM_FLOAT_MULT);            //Current acceleration (m/s^2)
 	BSMCACC->caccData.distToPVeh = (int)(comm_pkt->range * BSM_FLOAT_MULT);	//Range from *dar (m)
 	BSMCACC->caccData.relSpdPVeh = (int)(comm_pkt->rate * BSM_FLOAT_MULT);	//Relative velocity from *dar (m/s)
+	BSMCACC->caccData.utcTime.hour = (comm_pkt->ts.hour);
+	BSMCACC->caccData.utcTime.minute = (comm_pkt->ts.min);
+	BSMCACC->caccData.utcTime.second = (1000 * (comm_pkt->ts.sec)) + comm_pkt->ts.millisec;
 	BSMCACC->blob1.id = 
 		*OCTET_STRING_new_fromBuf(&asn_DEF_OCTET_STRING, comm_pkt->object_id, -1);
 
@@ -99,6 +102,10 @@ int BSM2vehcomm(BSMCACC_t *BSMCACC, veh_comm_packet_t *comm_pkt) {
 		comm_pkt->longitude = (double)(BSMCACC->blob1.longitude / LONG_LAT_MULT);
 		comm_pkt->latitude = (double)(BSMCACC->blob1.latitude / LONG_LAT_MULT);
 		comm_pkt->heading = (double)(BSMCACC->blob1.heading / HEADING_MULT);
+		comm_pkt->ts.hour = BSMCACC->caccData.utcTime.hour;
+		comm_pkt->ts.min = BSMCACC->caccData.utcTime.minute;
+		comm_pkt->ts.sec = BSMCACC->caccData.utcTime.second/1000;
+		comm_pkt->ts.millisec = BSMCACC->caccData.utcTime.second%1000;
 
 //      	BSMCACC->blob1.id = "1"; //comm_pkt->object_id[GPS_OBJECT_ID_SIZE + 1];
         	return 0;
