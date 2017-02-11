@@ -4,9 +4,9 @@
 # Copyright (c) 2008   Regents of the University of California
 #
 
-HDRS= $(SENS_INC_DIR)/path_gps_lib.h
-
 include $(CAPATH_MK_DEFS)
+
+HDRS= $(SENS_INC_DIR)/path_gps_lib.h
 
 PATH_CFLAGS += -I$(ATSC_INC_DIR) -I$(CICAS_SRC_DIR)
 #PATH_CFLAGS += -g
@@ -25,24 +25,6 @@ all: $(OBJDIR) $(EXEC)
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
-$(OBJDIR)/garmenable: $(OBJDIR)/garmenable.o
-$(OBJDIR)/gpsdb: $(OBJDIR)/gpsdb.o
-$(OBJDIR)/gpsdistance: $(OBJDIR)/gpsdistance.o
-$(OBJDIR)/gpslatlong: $(OBJDIR)/gpslatlong.o
-$(OBJDIR)/gpssetdate: $(OBJDIR)/gpssetdate.o
-$(OBJDIR)/gpssnd: $(OBJDIR)/gpssnd.o
-$(OBJDIR)/gpsget: $(OBJDIR)/gpsget.o
-$(OBJDIR)/gpsrcv: $(OBJDIR)/gpsrcv.o
-$(OBJDIR)/gps2xy: $(OBJDIR)/gps2xy.o
-$(OBJDIR)/gpsdemo: $(OBJDIR)/gpsdemo.o
-$(OBJDIR)/gpspoint: $(OBJDIR)/gpspoint.o
-$(OBJDIR)/bcnrcv: $(OBJDIR)/bcnrcv.o
-$(OBJDIR)/macget: $(OBJDIR)/macget.o
-$(OBJDIR)/rdgpsdb: $(OBJDIR)/rdgpsdb.o
-$(OBJDIR)/test_convert: $(OBJDIR)/test_convert.o
-$(OBJDIR)/tsprcv: $(OBJDIR)/tsprcv.o
-$(OBJDIR)/tcp_client: $(OBJDIR)/tcp_client.o
-$(OBJDIR)/tcp_echo: $(OBJDIR)/tcp_echo.o
 
 clean:
 	rm -f $(OBJDIR)/*.o *.err $(EXEC)
