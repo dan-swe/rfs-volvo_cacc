@@ -1226,7 +1226,7 @@ int gps2localtime(int utc_date, float utc_time )
         gm_epoch = curr_utc_time;
         
         localtime_r( &local_epoch, &local_time );               
-#ifdef QNX6
+#ifdef SYS_QNX6_H
         local_epoch = gm_epoch - 28800 + 3600 ;
 #else
         local_epoch = gm_epoch - 28800 + (3600 * local_time.tm_isdst);
@@ -1268,8 +1268,8 @@ int clockset2gps(int utc_date, double utc_time )
 		day -= 1;
 	}
 
-	snprintf(date_string, 128, "date 20%02d%02d%02d%02d%02d.%02d",
-			year, month, day, hour, min, sec);
+	snprintf(date_string, 128, "date %02d%02d%02d%02d%s%02d.%02d",
+			month, day, hour, min, "20", year, sec);
 	system(date_string);
 	return 1;
 }
@@ -1345,3 +1345,39 @@ void path_gps_xy2latlong(double *xin, double *yin,
 	}
 	return;
 }
+
+/**
+ *	Given UTC time in timestamp_t format, and date as an int
+ *	of the form DDMMYY, computer the secs since the Unix epoch.
+ */
+time_t gps_utc2sec_epoch(timestamp_t utc_time, int date_of_fix)
+{
+
+        struct tm tm;
+        float remainder;
+        time_t sec_since_epoch = 0;
+
+        tm.tm_mday = date_of_fix/10000;
+        remainder = date_of_fix - tm.tm_mday * 10000;
+        tm.tm_mon = remainder/100 - 1;
+        remainder = date_of_fix - tm.tm_mday * 10000 - (tm.tm_mon + 1) * 100;
+        tm.tm_year = (int)remainder + 100;
+        tm.tm_hour = utc_time.hour; 
+        tm.tm_min = utc_time.min; 
+        tm.tm_sec = utc_time.sec; 
+        tm.tm_isdst = -1;
+        sec_since_epoch = mktime(&tm);
+        if(sec_since_epoch < 0) {
+                perror("gpsutc2sec:sec_since_epoch");
+                fprintf(stderr, "Error in gpsutc2sec:sec_since_epoch:"); 
+		print_timestamp(stderr, &utc_time);
+		fprintf(stderr, " date_of_fix %d mday %d mon %d year %d\n", 
+			date_of_fix,
+			tm.tm_mday,
+			tm.tm_mon,
+			tm.tm_year);
+        }
+
+        return sec_since_epoch;
+}
+ 
