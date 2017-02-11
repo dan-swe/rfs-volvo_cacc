@@ -437,7 +437,7 @@ int main(int argc, char *argv[])
 			 0, (struct sockaddr *) &dst_addr, sizeof(dst_addr));
 
                 if (bytes_sent < 0) {
-                        perror("UDP sendto ");
+                        perror("dvi_snd: UDP sendto ");
                         printf("port %d addr 0x%08x\n",
                                 ntohs(dst_addr.sin_port),
                                 ntohl(dst_addr.sin_addr.s_addr));
@@ -448,7 +448,7 @@ int main(int argc, char *argv[])
 			 0, (struct sockaddr *) &dst_addr2, sizeof(dst_addr2));
 
                 if (bytes_sent < 0) {
-                        perror("UDP sendto ");
+                        perror("dvi_snd: UDP sendto ");
                         printf("port %d addr 0x%08x\n",
                                 ntohs(dst_addr2.sin_port),
                                 ntohl(dst_addr2.sin_addr.s_addr));
