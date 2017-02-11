@@ -204,7 +204,7 @@ int gps2systime (int utc_date, float utc_time ) {
         gm_epoch = curr_utc_time;
         
         localtime_r( &local_epoch, &local_time );               
-#ifdef QNX6
+#ifdef SYS_QNX6_H
         local_epoch = gm_epoch - 28800 + 3600 ;
 #else
         local_epoch = gm_epoch - 28800 + (3600 * local_time.tm_isdst);
