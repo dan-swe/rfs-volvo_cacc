@@ -6,6 +6,7 @@
 from-env "AVCS_POSITION" = '1' ;
 from-env "AVCS_VEHICLE" = 'long_trk' ;
 
+global "AVCS_DIR" = '../long_ctl/src/avcs' ;
 global "CONFIG_FILE" = 'realtime.ini' ;
 global "PLATOON_SIZE" = '1' ;
 global "STEERING" = 'trk_lat' ;
@@ -16,7 +17,7 @@ global "CAN_CLIENT_DIR" = '../../can/jbus/src/qnx' ;
 global "CAN_DRIVER_DIR" = '../../can/drv_sja1000/qnx' ;
 global "LONG_CFG_FILE" = 'realtime' ;
 global "LONG_PLOT" = '../plot/trkplot' ;
-global "COMMAND_TEST" = '1' ;
+global "SYNC_TRUCK_NUMBER" = '1' ;
 global "LAPTOP_IP" = '128.32.235.133' ;
 #global "DSRC_IP" = '10.0.1.34' ;
 global "DSRC_IP" = '10.0.1.46' ;
@@ -43,7 +44,7 @@ shell 'Show configurations'
 	echo Longitudinal controller is $LONGITUDINAL.
 	echo Longitudinal directory is $LONG_DIR.
 	echo Longitudinal configuration file is $LONG_DIR$LONG_CFG_FILE.ini
-	echo Command test number is $COMMAND_TEST 
+	echo Sync truck number is $SYNC_TRUCK_NUMBER
 	echo Longitudinal output file name is /big/data/$LONG_CFG_FILE
 	echo LAPTOP_IP  $LAPTOP_IP
 	echo DSRC_IP  $DSRC_IP
@@ -177,45 +178,39 @@ shell 'Stop longitudinal control'
 ;
 skip ;
 
-shell 'Start trace file'
+reset-global 'Set system time synchronization truck number'
+from-user "SYNC_TRUCK_NUMBER" 'Sync truck number?'
+;
+
+shell 'Sync time to synchronization truck'
 %(
-	/home/truckcontrol/test/trk_wr -t 100 1>/big/data/trk_wr.txt 2>/big/data/trk_wr.err &
+	$TEST_DIR/settime2trucksignal -t $SYNC_TRUCK_NUMBER
 %)
 ;
-shell 'Stop trace file'
+
+skip ;
+shell 'Test CAN1 
+You should see LOTS of CAN messages being printed to screen. 
+If you don''t see them, there''s a problem! 
+In either case, hit ctrl-C to stop'
 %(
-	slay -f -Q -s TERM trk_wr
-	if [ -e /big/data/last_start_timestamp.txt ]
-	then
-	        if [ -e /big/data/trk_wr.txt ]
-	        then
-	                mv /big/data/trk_wr.txt /big/data/trk_wr_`cat /big/data/last_start_timestamp.txt`.txt
-	        fi
-	fi
+	cd $AVCS_DIR
+	./run_can1_only.sh
 %)
 ;
+
 skip ;
-shell 'Copy files to laptop'
+shell 'Test DVI
+If the DVI is working, it should cycle through all of its displays.
+If not, you''ll see a bunch of UDP sendto errors
+In either case, hit ctrl-C to stop'
 %(
-	scp $DATAFILE $USER@$LAPTOP_IP:$PLOT_DIR
-	scp /big/data/test.dat $USER@$LAPTOP_IP:$PLOT_DIR
-	scp /big/data/trk_wr* $USER@$LAPTOP_IP:$PLOT_DIR
+	cd $AVCS_DIR
+	./run_dvi.sh
 %)
 ;
-skip ;
-
-reset-global 'Set longitudinal test number'
-from-user "COMMAND_TEST" 'Longitudinal command test number?'
-;
 
 skip ;
-
-reset-global 'Set longitudinal config file name'
-from-user "LONG_CFG_FILE" 'Longitudinal config file name?'
-;
-
-skip ;
-
 do-menu "VEHICLE_MENU" 'Vehicle -->MENU'
 ;
 
