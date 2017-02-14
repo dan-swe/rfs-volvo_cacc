@@ -178,7 +178,7 @@ int main( int argc, char *argv[] )
 		}
 
 
-		get_current_timestamp(&comm_pkt.ts);
+		get_current_timestamp(&comm_pkt.rcv_ts);
  
 ////////////////////Make sure the comm_pkt is received from other trucks/////
 
