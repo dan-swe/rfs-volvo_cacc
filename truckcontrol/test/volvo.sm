@@ -182,7 +182,7 @@ reset-global 'Set system time synchronization truck number'
 from-user "SYNC_TRUCK_NUMBER" 'Sync truck number?'
 ;
 
-shell 'Sync time to synchronization truck'
+shell 'Sync time to synchronization truck (press 2 & 4 first!)'
 %(
 	$TEST_DIR/settime2trucksignal -t $SYNC_TRUCK_NUMBER
 %)
