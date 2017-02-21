@@ -15,7 +15,7 @@ PATH_CFLAGS += -I$(ASNDIR)
 PATH_LDFLAGS += -L$(ASNDIR)
 PATH_OBJS += $(ASNDIR)/*.o $(OBJDIR)/veh_lib.o
 
-EXEC =  $(OBJDIR)/veh_rcv $(OBJDIR)/veh_snd $(OBJDIR)/veh_snd_test $(OBJDIR)/dvi_rcv $(OBJDIR)/dvi_snd $(OBJDIR)/dvi_snd_db_test $(OBJDIR)/settime2trucksignal
+EXEC =  $(OBJDIR)/veh_rcv $(OBJDIR)/veh_snd $(OBJDIR)/veh_snd_test $(OBJDIR)/dvi_rcv $(OBJDIR)/dvi_snd $(OBJDIR)/dvi_snd_db_test $(OBJDIR)/settime2trucksignal $(OBJDIR)/msleep
 
 all:    $(OBJDIR) $(PATH_OBJS) $(EXEC)
 
