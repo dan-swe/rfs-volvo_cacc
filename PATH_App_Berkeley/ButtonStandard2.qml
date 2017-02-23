@@ -1,7 +1,6 @@
 import QtQuick 2.5
 import QtGraphicalEffects 1.0
 
-// creat a round button
 
 Item{
     id:buttonHolder
@@ -13,63 +12,79 @@ Item{
     height:myHeight+10
     width:myWidth+10
 
+
     Rectangle{
         id:buttonBG2
         width:myWidth
         height:myHeight
-        border.width:1
-        radius:120
-        border.color:"#FFFFFF"
-        // border.color:buttonColorLighter
+        border.width:3
+        radius:120 //SY: the shape of button is round
+        border.color:"#ffffff"
+
+        //border.color:buttonColorLighter
         /*gradient:Gradient{
             GradientStop { position: 0; color: buttonColor }
             GradientStop { position: 1; color: buttonColorDarker }
         }*/
+
+        //color:"#f7f7f7"
         color:"transparent"
 
-        Text{
+  /*Text{
             id:buttonTxt
             text:btnText
+            //color:"#071e29"
             color:"#ffffff"
             font.bold: true
             anchors.centerIn: parent
             font.family: "Volvo Sans Pro"
-            font.pixelSize: 70 // original is 40
-        }
-       /* DropShadow {
-            anchors.fill: buttonTxt
-            horizontalOffset: 3
-            verticalOffset: 3
-            radius: 8.0
-            anchors.rightMargin: -31
-            samples: 16
-            color: "#ffffff"
-            source: buttonTxt
+            font.pixelSize: 80 // SY: original is 40
+            //contentWidth:0
         }*/
-    }
-    DropShadow {
-        color: "#00aaff"
+
+
+
+
+    /*DropShadow {
+        color: "#aa000000"//"#00aaff"
         anchors.fill: buttonBG2
-        horizontalOffset: 1
-        verticalOffset: 1
-        radius: 2.0
-        fast: false
+        horizontalOffset: 6
+        verticalOffset: 6
+        radius: 3.0
+        //fast: false
         anchors.rightMargin: -6
         samples: 16
         source: buttonBG2
-    }
+    }*/
 
-    MouseArea{
+
+
+    MouseArea{  // SY2: I changet the effect of pressing and releasing button
         anchors.fill:parent
         onPressed:{
-            parent.scale=1.2
+
+       if (myID===2) {
+            minusGapArrow.source="Images/Button/minusGap1.png"
+            parent.scale=0.9
+        } else if(myID===3){
+          addGapArrow.source="Images/Button/addGap1.png"
+          parent.scale=1.1
+         }
         }
+
         onReleased:{
             parent.scale=1
-            if(parent.opacity===1){
+           if (myID===2) {
+                minusGapArrow.source="Images/Button/minusGap.png"
+              } else if(myID===3){
+               addGapArrow.source="Images/Button/addGap.png"
+
+            }
+                 if(parent.opacity===1){
                 buttonClicked(myGroup,myID)
             }
         }
     }
 
+ }
 }

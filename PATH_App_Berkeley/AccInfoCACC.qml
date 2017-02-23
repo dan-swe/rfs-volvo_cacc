@@ -1,3 +1,4 @@
+
 import QtQuick 2.3
 
 import QtGraphicalEffects 1.0
@@ -119,8 +120,8 @@ Item{
             anchors.horizontalCenterOffset: 1
             anchors.centerIn:parent
             opacity:activeCruise()? 1 : ccEnabladOpacityLevel
-            source:accState > 2 ? "Images/Cruise/ccLanesGrey.png" : "Images/Cruise/ccLanesBlue.png"
-          //source: "Images/Cruise/ccLanesBlue.png"
+            //source:accState > 2 ? "Images/Cruise/ccLanesGrey.png" : "Images/Cruise/ccLanesBlue.png" // change the color of the lane to white
+            source:"Images/Cruise/ccLanesWhite.png" // SY2: I change the color of raodside icon to white
 
         }
 
@@ -210,21 +211,19 @@ Item{
             id:ccGap
 
             anchors.horizontalCenter: parent.horizontalCenter
-            //anchors.bottom: ccLanes.bottom
-            //anchors.centerIn:parent
             anchors.verticalCenterOffset: 30
             opacity:activeCruise()? 1 : ccEnabladOpacityLevel
             source: accState>2 ? "Images/Cruise/ccGapGrey.png" : "Images/Cruise/ccGapBlue.png"
-            //source:  "Images/Cruise/ccGapBlue.png"
+
 
             clip:true
             fillMode: Image.Pad
-            verticalAlignment: Image.AlignBottom
-            property var clipping:[25,42,58,70,80]
+            verticalAlignment: Image.AlignTop // SY: the alignment is changed from Bottom to Top
+            property var clipping:[5,17,33,50,75] //[25,42,58,70,80]-> 25, 17, 16, 12, 10
             y: 40
             width:150
             height:accState>2 ? clipping[udpXDataCACC.ACCTimeGap] : clipping[adjustedCACCGap]
-            scale: 1.6
+            scale: 1.6 //SY: the image is enlarged
             anchors.horizontalCenterOffset: 0
             anchors.bottomMargin: -107
 
@@ -309,11 +308,10 @@ Item{
             anchors.bottom: ccGap.top
             anchors.bottomMargin: 28
             source:accState > 2 ? "Images/Cruise/ccTargetGrey.png" :"Images/Cruise/ccTargetBlueTruck.png"
-            //source:"Images/Cruise/ccTargetBlueTruck.png"
-
             visible:targetCruise()
             opacity:(activeCruise()? 1 : ccEnabladOpacityLevel)
         }
+
         Item{
             id:ccWifiContainer
             anchors.centerIn: parent
@@ -393,15 +391,15 @@ Item{
         Item{
 
             id:accStateTextHolder
-            y: 152
+            y: 168
             width:304
             height:42
-            anchors.horizontalCenterOffset: 5
+            anchors.horizontalCenterOffset: 1
             // anchors.top:ccLanes.bottom
             anchors.topMargin:100
             anchors.horizontalCenter: parent.horizontalCenter
 
-            Text{                                 //change CACC below the icon here
+            Text{                                 //SY: change CACC below the icon here
                 id:accStateText
                 font.family: fontBold
                 font.bold:true
@@ -413,7 +411,7 @@ Item{
                 horizontalAlignment: Text.AlignHCenter
                 anchors.centerIn: parent
                 opacity: activeCruise()? 1 : ccEnabladOpacityLevel
-                color:accState>2 ? fontInstrumentColor : "#007dc8"
+                color:accState>2 ? fontInstrumentColor :"#5ea6f5"  // "#007dc8"
             }
 
         }
