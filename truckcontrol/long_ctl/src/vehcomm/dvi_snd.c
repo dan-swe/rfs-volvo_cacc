@@ -79,6 +79,8 @@ int main(int argc, char *argv[])
 	struct ExtraDataCACCStruct egodata;
 	char *egodata_array = (char *)&egodata;
 	char db_dvi_rcv = -1;
+	const char drive_mode_2_myCACCState[] = {0, 0, 4, 4, 2}; //DVI myCACCState: 0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
+									//comm_pkt drive_mode (aka user_ushort_2): 0:stay, 1:manual, 2:CC, 3:ACC, 4:CACC
 	veh_comm_packet_t comm_pkt1;
 	veh_comm_packet_t comm_pkt2;
 	veh_comm_packet_t comm_pkt3;
@@ -284,9 +286,7 @@ int main(int argc, char *argv[])
 			db_clt_read(pclt, DB_LONG_OUTPUT_VAR, sizeof(long_output_typ), &long_output);
 			db_clt_read(pclt, DB_J1939_VOLVO_TARGET_VAR, sizeof(j1939_volvo_target_typ), &volvo_target);
 
-			char drive_mode_2_CACCState[] = {0, 0, 4, 4, 2}; //DVI CACCState: 0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
-									//comm_pkt drive_mode (aka user_ushort_2): 0:stay, 1:manual, 2:CC, 3:ACC, 4:CACC
-			egodata.CACCState = drive_mode_2_CACCState[self_comm_pkt.user_ushort_2];
+			egodata.CACCState = drive_mode_2_myCACCState[self_comm_pkt.user_ushort_2];
 			if( (long_output.selected_gap_level > 0) && (long_output.selected_gap_level <= 5) ) 
 				long_output.selected_gap_level--;
 			else
@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
 
 			dvi_out.platooningState = 2; //0=standby, 2=platooning NOTE:Must be set to 2 to get rid of "Please switch VEC stalk to ON"
 			dvi_out.position = self_comm_pkt.my_pip - 1;       // 1-3: 0=Not available 1=First position 2=Second position 3=Third position
-			printf("Got self_pkt! CACCState %d my_pip %d db_dvi_rcv %hhu user_ushort_2 %d\n",
+			printf("Got self_pkt! myCACCState %d my_pip %d db_dvi_rcv %hhu user_ushort_2 %d\n",
 				egodata.CACCState, 
 				dvi_out.position,
 				db_dvi_rcv,
@@ -368,6 +368,7 @@ int main(int argc, char *argv[])
 				else
 					dvi_out.vehicles[0].isBraking = 0;
 				dvi_out.vehicles[0].hasIntruder = ((comm_pkt1.maneuver_des_2 & 0x03) == 1) ? 1 : 0;	//  0-2: 0=Not available 1=Cut-in 2=Cut-out
+				dvi_out.vehicles[0].otherCACCState = drive_mode_2_myCACCState[comm_pkt1.user_ushort_2];
 			}
 		}
 
@@ -387,6 +388,7 @@ int main(int argc, char *argv[])
 				else
 					dvi_out.vehicles[1].isBraking = 0;
 				dvi_out.vehicles[1].hasIntruder = ((comm_pkt2.maneuver_des_2 & 0x03) == 1) ? 1 : 0;	// & 0x03;	// 0-2: 0=Not available 1=Cut-in 2=Cut-out
+				dvi_out.vehicles[1].otherCACCState = drive_mode_2_myCACCState[comm_pkt2.user_ushort_2];
 			}
 		}
 
@@ -406,6 +408,7 @@ int main(int argc, char *argv[])
 				else
 					dvi_out.vehicles[2].isBraking = 0;
 				dvi_out.vehicles[2].hasIntruder = ((comm_pkt3.maneuver_des_2 & 0x03) == 1) ? 1 : 0;	// 0-2: 0=Not available 1=Cut-in 2=Cut-out
+				dvi_out.vehicles[2].otherCACCState = drive_mode_2_myCACCState[comm_pkt3.user_ushort_2];
 			}
 		}
 
@@ -421,7 +424,7 @@ int main(int argc, char *argv[])
 		}
 
 		if(verbose)
-			printf("EgoPlatooningState %d EgoVehiclePosition %d EgoCACCState1 %d Type1 %d Braking1 %d CutIn1 %d Type2 %d Braking2 %d CutIn2 %d Type3 %d Braking3 %d CutIn3 %d db_dvi_rcv %hhu\n",
+			printf("EgoPlatooningState %d EgoVehiclePosition %d EgomyCACCState1 %d Type1 %d Braking1 %d CutIn1 %d Type2 %d Braking2 %d CutIn2 %d Type3 %d Braking3 %d CutIn3 %d db_dvi_rcv %hhu\n",
 						dvi_out.platooningState, 
 						dvi_out.position,
 						egodata.CACCState, 
