@@ -21,6 +21,9 @@
 #include "../avcs/clt_vars.h"
 #include "dvi.h"
 
+#include "../../../../can/jbus/include/jbus_vars.h"
+#include "../../../../can/jbus/include/jbus_extended.h"
+
 static int sig_list[]=
 {
 	SIGINT,
@@ -104,6 +107,7 @@ int main(int argc, char *argv[])
 	int no_send2 = 1;
 	int create_db_vars = 0;
 	long_output_typ long_output;
+	j1939_volvo_target_typ volvo_target;
 
 	memset(&dvi_out, 0, sizeof(struct SeretUdpStruct));
 	memset(&egodata, 0, sizeof(struct ExtraDataCACCStruct));
@@ -272,13 +276,13 @@ int main(int argc, char *argv[])
 	get_current_timestamp(&comm_pkt1_ts_sav);
 	get_current_timestamp(&comm_pkt2_ts_sav);
 	get_current_timestamp(&comm_pkt3_ts_sav);
-
 	while (1) {
 		clt_ipc_receive(pclt, &trig_info, sizeof(trig_info));
 
 		if(DB_TRIG_VAR(&trig_info) == DB_COMM_TX_VAR) {
 	                db_clt_read(pclt, DB_COMM_TX_VAR, sizeof(veh_comm_packet_t), &self_comm_pkt);
 			db_clt_read(pclt, DB_LONG_OUTPUT_VAR, sizeof(long_output_typ), &long_output);
+			db_clt_read(pclt, DB_J1939_VOLVO_TARGET_VAR, sizeof(j1939_volvo_target_typ), &volvo_target);
 
 			char drive_mode_2_CACCState[] = {0, 0, 4, 4, 2}; //DVI CACCState: 0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
 									//comm_pkt drive_mode (aka user_ushort_2): 0:stay, 1:manual, 2:CC, 3:ACC, 4:CACC
@@ -289,7 +293,7 @@ int main(int argc, char *argv[])
 				long_output.selected_gap_level = 4;
     			egodata.CACCTimeGap = long_output.selected_gap_level;//0-4
     			egodata.ACCTimeGap = long_output.selected_gap_level;//0-4
-
+			egodata.CACCTargetActive = (volvo_target.TargetAvailable == 0) ? 0 : 1;
 
 			dvi_out.platooningState = 2; //0=standby, 2=platooning NOTE:Must be set to 2 to get rid of "Please switch VEC stalk to ON"
 			dvi_out.position = self_comm_pkt.my_pip - 1;       // 1-3: 0=Not available 1=First position 2=Second position 3=Third position
