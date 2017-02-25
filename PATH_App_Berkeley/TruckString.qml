@@ -9,9 +9,9 @@ Item {
 
   // This is the code we need to control the car icon.
     property var stringData:[
-           {"ID":0,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false},
-           {"ID":1,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false},
-           {"ID":2,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false}
+           {"ID":0,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false,"otherCACCState":0},
+           {"ID":1,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false,"otherCACCState":0},
+           {"ID":2,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false,"otherCACCState":0}
        ]
 
     function recreateStringData(newData){
@@ -30,12 +30,7 @@ Item {
                 temp.Intruder=false
             }
             temp.IsBraking=newData[i][2]
-
-            /*if(newData[i][3]>0){
-                temp.isTemporaryLeader=true
-            }else{
-                temp.isTemporaryLeader=false
-            }*/
+            temp.otherCACCState=newData[i][3]
 
             temp.Destination=""
             items.push(temp)
@@ -238,21 +233,23 @@ Item {
                     Image{
                         id:vehImage
                         anchors.centerIn: parent
-                        source:"Images/PATH/vehLeader.png"
+                        //source:"Images/PATH/vehLeader.png"
                         scale: 1.4 // SY:  enlarge the truck icon
 
-                       // source:calculateImagesource()
+                        source:calculateImagesource()
 
                         // My Turck ID is 0 (leading truck), 1 (following), 2(following)
-                       /* function calculateImagesource(){
+                        function calculateImagesource(){
+//                            console.log(udpSeret.otherCACCState)
                             if(index===myTruckID){
                                return("Images/PATH/vehEgo.png")
-                            }else if(index===0 && udpXDataCACC.CACCState===2){
+//                            }else if(index===0 && udpXDataCACC.CACCState===2){
+                            }else if(udpSeret.vehicleArray[index].otherCACCState===2){
                                return("Images/PATH/vehLeader.png")
                             }else{
                                 return("Images/PATH/vehFollower.png")
                             }
-                         }*/
+                         }
                     }
 
 

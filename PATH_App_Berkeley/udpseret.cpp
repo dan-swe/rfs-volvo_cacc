@@ -41,7 +41,7 @@ void UdpSeret::readPendingDatagrams()
         sub.append(vehicleData[i].type);
         sub.append(vehicleData[i].hasIntruder);
         sub.append(vehicleData[i].isBraking);
-//        sub.append(vehicleData[i].isTemporaryLeader);
+        sub.append(vehicleData[i].otherCACCState);
         test[i]=sub;
         sub.clear();
     }
