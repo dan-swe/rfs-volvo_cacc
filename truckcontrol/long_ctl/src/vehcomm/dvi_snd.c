@@ -48,6 +48,7 @@ static db_id_t db_vars_list[] = {
 	{DB_COMM_SECOND_TRK_VAR, sizeof(veh_comm_packet_t)},
 	{DB_COMM_THIRD_TRK_VAR, sizeof(veh_comm_packet_t)},
 	{DB_COMM_TX_VAR, sizeof(veh_comm_packet_t)},
+	{DB_J1939_VOLVO_TARGET_VAR, sizeof(j1939_volvo_target_typ)},
 };
 
 #define NUM_DB_VARS     sizeof(db_vars_list)/sizeof(db_id_t)
@@ -135,7 +136,8 @@ int main(int argc, char *argv[])
 		case 'P': send_test = 1; 
 			  send_test_str = strdup(optarg);
 			  no_send1 = 0;
-			  sscanf(send_test_str, "%hhu %hhu %hhu %hhu %u %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu ", 
+//			  sscanf(send_test_str, "%hhu %hhu %hhu %hhu %u %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu ", 
+			  sscanf(send_test_str, "%hhu %hhu %hhu %hhu %u %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu ", 
 				&dvi_out.platooningState, //0=standby, 1=joining, 2=platooning, 3=leaving, 4=dissolve 
 							 //(PATH: I guess only 0 and 3 is used?)
 				&dvi_out.position, //-1:nothing (follower with no platoon), 0:leader, >0 Follower (Ego position of vehicle)
@@ -147,19 +149,19 @@ int main(int argc, char *argv[])
 								  // (PATH: The graphical indication is the same for all intruders)
 				&dvi_out.vehicles[0].isBraking, // 0:false, 1:braking, 2:hard braking 
 								// (PATH: same red indication for both 1 & 2)
-    				&dvi_out.vehicles[0].otherCACCState, //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
+//    				&dvi_out.vehicles[0].otherCACCState, //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
 				&dvi_out.vehicles[1].type, // 0=nothing 1=truck 2=truck with communication error
 				&dvi_out.vehicles[1].hasIntruder, // 0:false, 1:truck, 2:car, 3:MC 
 								  // (PATH: The graphical indication is the same for all intruders)
 				&dvi_out.vehicles[1].isBraking, // 0:false, 1:braking, 2:hard braking 
 								// (PATH: same red indication for both 1 & 2)
-    				&dvi_out.vehicles[1].otherCACCState, //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
+//    				&dvi_out.vehicles[1].otherCACCState, //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
 				&dvi_out.vehicles[2].type, // 0=nothing 1=truck 2=truck with communication error
 				&dvi_out.vehicles[2].hasIntruder, // 0:false, 1:truck, 2:car, 3:MC 
 								  // (PATH: The graphical indication is the same for all intruders)
-				&dvi_out.vehicles[2].isBraking, // 0:false, 1:braking, 2:hard braking 
+				&dvi_out.vehicles[2].isBraking // 0:false, 1:braking, 2:hard braking 
 								// (PATH: same red indication for both 1 & 2)
-    				&dvi_out.vehicles[2].otherCACCState //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
+//    				&dvi_out.vehicles[2].otherCACCState //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
 			  );
 			  break;
 		case 'E': send_test = 1; 
@@ -371,7 +373,7 @@ int main(int argc, char *argv[])
 				else
 					dvi_out.vehicles[0].isBraking = 0;
 				dvi_out.vehicles[0].hasIntruder = ((comm_pkt1.maneuver_des_2 & 0x03) == 1) ? 1 : 0;	//  0-2: 0=Not available 1=Cut-in 2=Cut-out
-				dvi_out.vehicles[0].otherCACCState = drive_mode_2_myCACCState[comm_pkt1.user_ushort_2];
+//				dvi_out.vehicles[0].otherCACCState = drive_mode_2_myCACCState[comm_pkt1.user_ushort_2];
 			}
 		}
 
@@ -391,7 +393,7 @@ int main(int argc, char *argv[])
 				else
 					dvi_out.vehicles[1].isBraking = 0;
 				dvi_out.vehicles[1].hasIntruder = ((comm_pkt2.maneuver_des_2 & 0x03) == 1) ? 1 : 0;	// & 0x03;	// 0-2: 0=Not available 1=Cut-in 2=Cut-out
-				dvi_out.vehicles[1].otherCACCState = drive_mode_2_myCACCState[comm_pkt2.user_ushort_2];
+//				dvi_out.vehicles[1].otherCACCState = drive_mode_2_myCACCState[comm_pkt2.user_ushort_2];
 			}
 		}
 
@@ -411,7 +413,7 @@ int main(int argc, char *argv[])
 				else
 					dvi_out.vehicles[2].isBraking = 0;
 				dvi_out.vehicles[2].hasIntruder = ((comm_pkt3.maneuver_des_2 & 0x03) == 1) ? 1 : 0;	// 0-2: 0=Not available 1=Cut-in 2=Cut-out
-				dvi_out.vehicles[2].otherCACCState = drive_mode_2_myCACCState[comm_pkt3.user_ushort_2];
+//				dvi_out.vehicles[2].otherCACCState = drive_mode_2_myCACCState[comm_pkt3.user_ushort_2];
 			}
 		}
 
