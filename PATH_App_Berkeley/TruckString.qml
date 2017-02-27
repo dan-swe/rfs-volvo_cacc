@@ -9,9 +9,9 @@ Item {
 
   // This is the code we need to control the car icon.
     property var stringData:[
-           {"ID":0,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false,"otherCACCState":0},
-           {"ID":1,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false,"otherCACCState":0},
-           {"ID":2,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false,"otherCACCState":0}
+           {"ID":0,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false},
+           {"ID":1,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false},
+           {"ID":2,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false}
        ]
 
     function recreateStringData(newData){
@@ -30,7 +30,12 @@ Item {
                 temp.Intruder=false
             }
             temp.IsBraking=newData[i][2]
-            temp.otherCACCState=newData[i][3]
+
+            /*if(newData[i][3]>0){
+                temp.isTemporaryLeader=true
+            }else{
+                temp.isTemporaryLeader=false
+            }*/
 
             temp.Destination=""
             items.push(temp)
@@ -160,7 +165,7 @@ Item {
                 height:stringRow.truckHeight+10
                 anchors.horizontalCenter: stringRow.horizontalCenter
 
-                Rectangle{
+                Rectangle{  // Here is the code that changes the red dot.
                     id:intruder
                     width:26
                     height:modelData.Intruder ? 26 : 0
@@ -169,7 +174,7 @@ Item {
                     gradient:errorTruckGradient
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.bottom:myBack.top
-                    anchors.bottomMargin:12
+                    anchors.bottomMargin:30//12 SY3: the value here is modified.
                     border.width:2
                     border.color:errorTruckColor
                 }
@@ -182,7 +187,6 @@ Item {
                     height:113
                     anchors.centerIn: parent
                     visible:index<numberOfTrucks
-
                     color:calculateMyColor()
 
                     function calculateMyColor(){
@@ -233,23 +237,21 @@ Item {
                     Image{
                         id:vehImage
                         anchors.centerIn: parent
-                        //source:"Images/PATH/vehLeader.png"
+                        source:"Images/PATH/vehLeader.png"
                         scale: 1.4 // SY:  enlarge the truck icon
 
-                        source:calculateImagesource()
+                       // source:calculateImagesource()
 
                         // My Turck ID is 0 (leading truck), 1 (following), 2(following)
-                        function calculateImagesource(){
-//                            console.log(udpSeret.otherCACCState)
+                       /* function calculateImagesource(){
                             if(index===myTruckID){
                                return("Images/PATH/vehEgo.png")
-//                            }else if(index===0 && udpXDataCACC.CACCState===2){
-                            }else if(udpSeret.vehicleArray[index].otherCACCState===2){
+                            }else if(index===0 && udpXDataCACC.CACCState===2){
                                return("Images/PATH/vehLeader.png")
                             }else{
                                 return("Images/PATH/vehFollower.png")
                             }
-                         }
+                         }*/
                     }
 
 

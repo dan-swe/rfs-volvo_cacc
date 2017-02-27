@@ -28,7 +28,7 @@ class udpExtraDataCACC : public QObject
     Q_PROPERTY(quint16 CACCDegraded READ CACCDegraded WRITE setCACCDegraded NOTIFY CACCDegradedChanged)
     Q_PROPERTY(quint16 CACCActiveConnectionToTarget READ CACCActiveConnectionToTarget WRITE setCACCActiveConnectionToTarget NOTIFY CACCActiveConnectionToTargetChanged)
     Q_PROPERTY(quint16 CACCActiveConnectionFromTarget READ CACCActiveConnectionFromTarget WRITE setCACCActiveConnectionFromTarget NOTIFY CACCActiveConnectionFromTargetChanged)
-//    Q_PROPERTY(quint16 timeGapActive READ timeGapActive WRITE setTimeGapActive NOTIFY timeGapActiveChanged)
+    Q_PROPERTY(quint16 timeGapActive READ timeGapActive WRITE setTimeGapActive NOTIFY timeGapActiveChanged)
     Q_PROPERTY(quint16 CACCTimeGap READ CACCTimeGap WRITE setCACCTimeGap NOTIFY CACCTimeGapChanged)
     Q_PROPERTY(quint16 ACCTimeGap READ ACCTimeGap WRITE setACCTimeGap NOTIFY ACCTimeGapChanged)
     Q_PROPERTY(quint16 CACCEvents READ CACCEvents WRITE setCACCEvents NOTIFY CACCEventsChanged)
@@ -54,7 +54,7 @@ class udpExtraDataCACC : public QObject
 
     quint16 m_CACCEvents;
 
-//    quint16 m_timeGapActive;
+    quint16 m_timeGapActive;
 
 private:
     ExtraDataCACCStruct m_extraDataStruct;
@@ -124,10 +124,10 @@ quint16 counter() const
     return m_counter;
 }
 
-//quint16 timeGapActive() const
-//{
-//    return m_timeGapActive;
-//}
+quint16 timeGapActive() const
+{
+    return m_timeGapActive;
+}
 
 signals:
 
@@ -153,7 +153,7 @@ void udpActiveChanged(bool udpActive);
 
 void counterChanged(quint16 counter);
 
-//void timeGapActiveChanged(quint16 timeGapActive);
+void timeGapActiveChanged(quint16 timeGapActive);
 
 public slots:
     void readPendingDatagrams();
@@ -245,14 +245,14 @@ void setCounter(quint16 counter)
     m_counter = counter;
     emit counterChanged(counter);
 }
-//void setTimeGapActive(quint16 timeGapActive)
-//{
-//    if (m_timeGapActive == timeGapActive)
-//        return;
-//
-//    m_timeGapActive = timeGapActive;
-//    emit timeGapActiveChanged(timeGapActive);
-//}
+void setTimeGapActive(quint16 timeGapActive)
+{
+    if (m_timeGapActive == timeGapActive)
+        return;
+
+    m_timeGapActive = timeGapActive;
+    emit timeGapActiveChanged(timeGapActive);
+}
 };
 
 #endif // UDPEXTRADATACACC_H

@@ -7,8 +7,8 @@ UdpSeret::UdpSeret(QObject *parent) :
     udpSocket = new QUdpSocket(this);
     udpSocket->bind(QHostAddress::Any, 10007);
 
-    setPlatooningState(0);
-    setPosition(-1);
+    setPlatooningState(2);//default is 0, 2 means platooning
+    setPosition(2);//default is -1
     setPopup(0);
     setExitDistance(0);
     setVehicleArray({});
@@ -41,7 +41,7 @@ void UdpSeret::readPendingDatagrams()
         sub.append(vehicleData[i].type);
         sub.append(vehicleData[i].hasIntruder);
         sub.append(vehicleData[i].isBraking);
-        sub.append(vehicleData[i].otherCACCState);
+//        sub.append(vehicleData[i].isTemporaryLeader);
         test[i]=sub;
         sub.clear();
     }

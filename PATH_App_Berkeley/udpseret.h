@@ -10,7 +10,8 @@ struct StringStruct {
   quint8 type; // 0=nothing 1=truck 2=truck with communication error
   quint8 hasIntruder; //0:false, 1:truck, 2:car, 3:MC (PATH: The graphical indication is the same for all intruders)
   quint8 isBraking; //0:false, 1:braking, 2:hard braking (PATH: same red indication for both 1 & 2)
-  quint8 otherCACCState; //0:manual, 2:CACC, 4:ACC
+  quint8 CACCState; //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
+//  quint8 isTemporaryLeader; //0:false, 1:true
 };
 
 struct SeretUdpStruct{
