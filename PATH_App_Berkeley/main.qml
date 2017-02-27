@@ -299,6 +299,7 @@ ApplicationWindow {
            anchors.horizontalCenter: buttonRow.horizontalCenter
            anchors.verticalCenter: parent.verticalCenter
            visible:platooningState>1
+
         }
 
         Rectangle{

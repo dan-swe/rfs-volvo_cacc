@@ -1,0 +1,14 @@
+INPUT(
+./release\main.o
+./release\udpseret.o
+./release\udpextradatacacc.o
+./release\udpsender.o
+./release\fileio.o
+./release\udpvehicle.o
+./release\qrc_qml.o
+./release\moc_udpseret.o
+./release\moc_udpextradatacacc.o
+./release\moc_udpsender.o
+./release\moc_fileio.o
+./release\moc_udpvehicle.o
+);

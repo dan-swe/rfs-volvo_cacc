@@ -1,0 +1,14 @@
+INPUT(
+./debug\main.o
+./debug\udpseret.o
+./debug\udpextradatacacc.o
+./debug\udpsender.o
+./debug\fileio.o
+./debug\udpvehicle.o
+./debug\qrc_qml.o
+./debug\moc_udpseret.o
+./debug\moc_udpextradatacacc.o
+./debug\moc_udpsender.o
+./debug\moc_fileio.o
+./debug\moc_udpvehicle.o
+);

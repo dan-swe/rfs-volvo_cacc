@@ -4,7 +4,6 @@
         <file>TruckString.qml</file>
         <file>Images/background.png</file>
         <file>ButtonStandard.qml</file>
-        <file>ButtonStandard2.qml</file>
         <file>TruckStringInfo.qml</file>
         <file>Images/destination.png</file>
         <file>Images/ratingStar.png</file>
@@ -39,7 +38,6 @@
         <file>Images/Cruise/ccGapBlue.png</file>
         <file>Images/Cruise/ccGapGrey.png</file>
         <file>Images/Cruise/ccLanesBlue.png</file>
-        <file>Images/Cruise/ccLanesWhite.png</file>
         <file>Images/Cruise/ccLanesBlueGlow.png</file>
         <file>Images/Cruise/ccLanesGreenGlow.png</file>
         <file>Images/Cruise/ccLanesGrey.png</file>
@@ -56,10 +54,6 @@
         <file>Images/Cruise/LKA_Level2Blue.png</file>
         <file>Images/Cruise/LKA_Level3.png</file>
         <file>Images/Cruise/LKA_Level3Blue.png</file>
-        <file>Images/Button/addGap.png</file>
-        <file>Images/Button/addGap1.png</file>
-        <file>Images/Button/minusGap.png</file>
-        <file>Images/Button/minusGap1.png</file>
         <file>AccInfo.qml</file>
         <file>AccInfoCACC.qml</file>
         <file>fonts/VolvoBroadPro.otf</file>
@@ -71,9 +65,15 @@
         <file>Images/PATH/vehFollower.png</file>
         <file>Images/PATH/vehLeader.png</file>
         <file>Images/PATH/badCom.png</file>
-        <file>Images/PATH/greenTri2.png</file>
         <file>UDP_OUT.js</file>
         <file>Images/PATH/Bottom Icon - ACC green-01.png</file>
         <file>Images/PATH/CruiseSetSpeed - background-mi.png</file>
+        <file>ButtonStandard2.qml</file>
+        <file>Images/Button/addGap.png</file>
+        <file>Images/Button/minusGap.png</file>
+        <file>Images/Button/addGap1.png</file>
+        <file>Images/Button/minusGap1.png</file>
+        <file>Images/Cruise/ccLanesWhite.png</file>
+        <file>Images/Cruise/ccLanesWhite1.png</file>
     </qresource>
 </RCC>

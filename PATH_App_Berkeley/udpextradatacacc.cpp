@@ -6,13 +6,13 @@ udpExtraDataCACC::udpExtraDataCACC(QObject *parent) : QObject(parent)
     udpSocket = new QUdpSocket(this);
     udpSocket->bind(QHostAddress::AnyIPv4, 10005);
 
-    setCACCState(0);
+    setCACCState(2); //every default number here is 0, usually 2
     setCACCTargetActive(0);
     setCACCDegraded(0);
     setCACCActiveConnectionToTarget(0);
     setCACCActiveConnectionFromTarget(0);
-//    setTimeGapActive(0);
-    setCACCTimeGap(0);
+    setTimeGapActive(0);
+    setCACCTimeGap(0); // change here for time gap 0 - 4
     setACCTimeGap(0);
     setCACCEvents(0);
     setPlatooningState(0);
@@ -38,7 +38,7 @@ void udpExtraDataCACC::readPendingDatagrams()
     setCACCDegraded(rawExtraData->CACCDegraded);
     setCACCActiveConnectionToTarget(rawExtraData->CACCActiveConnectionToTarget);
     setCACCActiveConnectionFromTarget(rawExtraData->CACCActiveConnectionFromFollower);
-  //  setTimeGapActive(rawExtraData->timeGapActive);
+    //setTimeGapActive(rawExtraData->timeGapActive);
     setCACCTimeGap(rawExtraData->CACCTimeGap);
     setACCTimeGap(rawExtraData->ACCTimeGap);
     setCACCEvents(rawExtraData->CACCEvents);
