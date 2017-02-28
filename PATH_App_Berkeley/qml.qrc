@@ -3,7 +3,6 @@
         <file>main.qml</file>
         <file>TruckString.qml</file>
         <file>Images/background.png</file>
-        <file>ButtonStandard.qml</file>
         <file>TruckStringInfo.qml</file>
         <file>Images/destination.png</file>
         <file>Images/ratingStar.png</file>
@@ -75,5 +74,8 @@
         <file>Images/Button/minusGap1.png</file>
         <file>Images/Cruise/ccLanesWhite.png</file>
         <file>Images/Cruise/ccLanesWhite1.png</file>
+        <file>ButtonStandardBlue.qml</file>
+        <file>ButtonStandardGray.qml</file>
+        <file>Images/PATH/greenTri2.png</file>
     </qresource>
 </RCC>

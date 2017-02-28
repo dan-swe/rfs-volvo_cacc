@@ -237,13 +237,13 @@ Item {
                     Image{
                         id:vehImage
                         anchors.centerIn: parent
-                        source:"Images/PATH/vehLeader.png"
+                        //source:"Images/PATH/vehLeader.png"
                         scale: 1.4 // SY:  enlarge the truck icon
 
-                       // source:calculateImagesource()
+                       source:calculateImagesource()
 
                         // My Turck ID is 0 (leading truck), 1 (following), 2(following)
-                       /* function calculateImagesource(){
+                        function calculateImagesource(){
                             if(index===myTruckID){
                                return("Images/PATH/vehEgo.png")
                             }else if(index===0 && udpXDataCACC.CACCState===2){
@@ -251,7 +251,7 @@ Item {
                             }else{
                                 return("Images/PATH/vehFollower.png")
                             }
-                         }*/
+                         }
                     }
 
 

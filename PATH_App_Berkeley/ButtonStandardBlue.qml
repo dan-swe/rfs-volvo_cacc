@@ -49,7 +49,7 @@ Item{
 
     }
 
-    DropShadow {
+ /*   DropShadow {
         color: "#aa000000"//"#00aaff"
         anchors.fill: buttonBG
         horizontalOffset: 6
@@ -60,7 +60,7 @@ Item{
         samples: 16
         source: buttonBG
     }
-
+*/
     MouseArea{ // SY4: margins were changed
         anchors.rightMargin: 2
         anchors.bottomMargin: 2
