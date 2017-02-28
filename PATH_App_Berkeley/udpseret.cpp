@@ -7,8 +7,8 @@ UdpSeret::UdpSeret(QObject *parent) :
     udpSocket = new QUdpSocket(this);
     udpSocket->bind(QHostAddress::Any, 10007);
 
-    setPlatooningState(2);//default is 0, 2 means platooning
-    setPosition(2);//default is -1
+    setPlatooningState(0);//default is 0, 2 means platooning
+    setPosition(-1);//default is -1
     setPopup(0);
     setExitDistance(0);
     setVehicleArray({});

@@ -270,11 +270,11 @@ ApplicationWindow {
             }
         }
 
-/*
+
         WaitingScreen{
             id:waitingHolder
         }
-*/
+
 
         Row{
             id:buttonRow

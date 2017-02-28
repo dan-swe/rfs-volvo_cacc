@@ -6,7 +6,7 @@ udpExtraDataCACC::udpExtraDataCACC(QObject *parent) : QObject(parent)
     udpSocket = new QUdpSocket(this);
     udpSocket->bind(QHostAddress::AnyIPv4, 10005);
 
-    setCACCState(2); //every default number here is 0, usually 2
+    setCACCState(0); //every default number here is 0, usually 2
     setCACCTargetActive(0);
     setCACCDegraded(0);
     setCACCActiveConnectionToTarget(0);
