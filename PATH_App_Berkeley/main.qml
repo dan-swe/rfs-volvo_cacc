@@ -345,13 +345,12 @@ ApplicationWindow {
                 layoutDirection: Qt.LeftToRight
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing:75
-
                 visible:true
 
-                ButtonStandard{
+                ButtonStandardBlue{
                     id:cAccBtn
                     scale:udpXDataCACC.CACCState===2? 1.1 : 1  // set the initial size of the button
-                    opacity:udpXDataCACC.CACCState===2? 1 : 0.3  // set the initial opacity of the button
+                    opacity:udpXDataCACC.CACCState===2? 1 : 0.8  // set the initial opacity of the button
                    // width: 225
                     //height: 80
                     anchors.margins: 2
@@ -364,10 +363,10 @@ ApplicationWindow {
                     //myState:1
                 }
 
-                ButtonStandard{
+                ButtonStandardGray{
                     id:accBtn
                     scale:udpXDataCACC.CACCState===4? 1.1 : 1  // set the initial size of the button
-                    opacity:udpXDataCACC.CACCState===4? 1 : 0.3  // set the initial opacity of the button
+                    opacity:udpXDataCACC.CACCState===4? 1 : 0.8  // set the initial opacity of the button
                     //width: 225
                     //height: 80
                     anchors.margins: 2
