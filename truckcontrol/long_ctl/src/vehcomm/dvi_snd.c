@@ -188,14 +188,16 @@ int main(int argc, char *argv[])
                           break;
                 }
         }
+//     if ( (sd = udp_peer2peer_init(&dst_addr, remote_ipaddr, local_ipaddr, remote_port, 0)) < 0) {
+//     int udp_unicast_init(struct sockaddr_in *paddr,char *ip_str,short port)
 
-	if ( (sd = udp_peer2peer_init(&dst_addr, remote_ipaddr, local_ipaddr, remote_port, 0)) < 0) {
+	if ( (sd = udp_unicast_init(&dst_addr, remote_ipaddr, remote_port)) < 0) {
 		printf("Failure create unicast socket1 from %s to %s:%d\n",
 		local_ipaddr, remote_ipaddr, remote_port);
 		longjmp(exit_env, 2);
 	}
-
-        if ( (sd2 = udp_peer2peer_init(&dst_addr2, remote_ipaddr, local_ipaddr, remote_port2, 0)) < 0) {
+//        if ( (sd2 = udp_peer2peer_init(&dst_addr2, remote_ipaddr, local_ipaddr, remote_port2, 0)) < 0) {
+	if ( (sd2 = udp_unicast_init(&dst_addr2, remote_ipaddr, remote_port2)) < 0) {
 		printf("Failure create unicast socket2 from %s to %s:%d\n",
 			local_ipaddr, remote_ipaddr, remote_port2);
 		longjmp(exit_env, 2);
@@ -295,7 +297,11 @@ int main(int argc, char *argv[])
 			if( (long_output.selected_gap_level > 0) && (long_output.selected_gap_level <= 5) ) 
 				long_output.selected_gap_level--;
 			else
-				long_output.selected_gap_level = 4;
+				if(long_output.selected_gap_level <= 0)
+					long_output.selected_gap_level = 0;
+			else
+				if(long_output.selected_gap_level > 5 )
+					long_output.selected_gap_level = 5;
     			egodata.CACCTimeGap = long_output.selected_gap_level;//0-4
     			egodata.ACCTimeGap = long_output.selected_gap_level;//0-4
 			egodata.CACCTargetActive = (volvo_target.TargetAvailable == 0) ? 0 : 1;
