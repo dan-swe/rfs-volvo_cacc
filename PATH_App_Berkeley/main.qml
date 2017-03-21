@@ -52,7 +52,7 @@ ApplicationWindow {
     property bool isLeader:udpSeret.position===0
     property int platooningState:udpSeret.platooningState
     property int popupID:udpSeret.popup
-    property int numberOfTrucks:3   // SY: The default is 1
+    property int numberOfTrucks:1  // SY: The default is 1
     property string exitDistance:(udpSeret.exitDistance/10.0).toFixed(1)
     property int myTruckID:udpSeret.position
     property var stringArray:udpSeret.vehicleArray
@@ -262,7 +262,7 @@ ApplicationWindow {
             Image{
                 id:bgAbstract
                 x: 0
-                y: 5
+                y: 0
                 width: 1383
                 height: 831
                 source:"Images/backgroundAbstract.png"
@@ -271,7 +271,8 @@ ApplicationWindow {
         }
 
 
-        WaitingScreen{
+
+       WaitingScreen{
             id:waitingHolder
         }
 
@@ -349,8 +350,9 @@ ApplicationWindow {
 
                 ButtonStandardBlue{
                     id:cAccBtn
-                    scale:udpXDataCACC.CACCState===2? 1.1 : 1  // set the initial size of the button
-                    opacity:udpXDataCACC.CACCState===2? 1 : 0.8  // set the initial opacity of the button
+                    //scale:udpXDataCACC.CACCState===2? 1.1 : 1  // set the initial size of the button
+                    scale:1
+                    opacity:udpXDataCACC.CACCState===2? 1 : 0.7  // set the initial opacity of the button
                    // width: 225
                     //height: 80
                     anchors.margins: 2
@@ -361,12 +363,24 @@ ApplicationWindow {
                     //myHeight: 80
                     myWidth: 225// SY: Change the parameters from 180 to 225
                     //myState:1
+
+                    layer.enabled:udpXDataCACC.CACCState===2? true : false //SY: a laye was add here  3/1/2017
+                    layer.effect:Glow {
+                        radius:10
+                        spread:0.15
+                        color: "white"
+                        transparentBorder:true
+                       }
                 }
 
+
+
                 ButtonStandardGray{
+
                     id:accBtn
-                    scale:udpXDataCACC.CACCState===4? 1.1 : 1  // set the initial size of the button
-                    opacity:udpXDataCACC.CACCState===4? 1 : 0.8  // set the initial opacity of the button
+                    //scale:udpXDataCACC.CACCState===4? 1.1 : 1  // set the initial size of the button
+                    scale:1
+                    opacity:udpXDataCACC.CACCState===4? 1 : 0.7  // set the initial opacity of the button
                     //width: 225
                     //height: 80
                     anchors.margins: 2
@@ -378,7 +392,17 @@ ApplicationWindow {
                     //myHeight: 80
                     myWidth: 225  // SY: Change the parameters from 180 to 225
                     //myState:0
+
+                    layer.enabled:udpXDataCACC.CACCState===4? true : false //SY: a laye was add here  3/1/2017
+                    layer.effect:Glow {
+                           radius:10
+                           spread:0.15
+                           color: "white"
+                           transparentBorder:true
+                       }
+
                 }
+
 
             }
 
@@ -410,11 +434,8 @@ ApplicationWindow {
 
                     Image{  //SY2: The content of the button was changed to an image
                         id:minusGapArrow
-                        sourceSize.height: 70
-                        sourceSize.width: 50
-                        fillMode: Image.Stretch
                         anchors.centerIn: parent
-                        source:"Images/Button/minusGap.png"
+                        source:"Images/Button/minusGap3D.png"
                     }
 
                 }
@@ -436,7 +457,7 @@ ApplicationWindow {
                         id:addGapArrow
                         anchors.centerIn: parent
                         visible:true
-                        source:"Images/Button/addGap.png"
+                        source:"Images/Button/addGap3D.png"
                         }
 
                 }
