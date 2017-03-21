@@ -8,10 +8,11 @@ Item {
     height:(stringRow.truckHeight+stringRow.spacing)*numberOfTrucks + 80
 
   // This is the code we need to control the car icon.
+  // I add a variable (otherCACCState:0, 2 ,4) here to get the state of each truck.
     property var stringData:[
-           {"ID":0,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false},
-           {"ID":1,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false},
-           {"ID":2,"Type":0,"Destination":"","Intruder":false,"isTemporaryLeader":false,"isBraking":false}
+        {"ID":0,"Type":0,"Intruder":false,"isBraking":false, "otherCACCState":0},
+        {"ID":1,"Type":0,"Intruder":false,"isBraking":false, "otherCACCState":0},
+        {"ID":2,"Type":0,"Intruder":false,"isBraking":false, "otherCACCState":0},
        ]
 
     function recreateStringData(newData){
@@ -168,7 +169,7 @@ Item {
                 Rectangle{  // Here is the code that changes the red dot.
                     id:intruder
                     width:26
-                    height:modelData.Intruder ? 26 : 0
+                    height:modelData.Intruder ? 0:0 //26 : 0 SY 3/1/17: changed
                     visible:modelData.Intruder
                     radius:width/2
                     gradient:errorTruckGradient
@@ -218,9 +219,9 @@ Item {
 
                     Rectangle{
                         id:brakingColor
-                        width:65//47 SY3: the width was changed
+                        width:60//47 SY3: the width was changed
                         radius:8
-                        height:160//113 SY3: the height was changed
+                        height:150//113 SY3: the height was changed
                         anchors.centerIn: parent
                         visible:modelData.IsBraking>0
                         color:modelData.IsBraking=== 2 ? "#FF0000" : "#FF0000"
@@ -230,28 +231,39 @@ Item {
                             color:parent.color
                             height:10
                             anchors.bottom:parent.bottom
-
                         }
                     }
 
                     Image{
                         id:vehImage
-                        anchors.centerIn: parent
-                        //source:"Images/PATH/vehLeader.png"
-                        scale: 1.4 // SY:  enlarge the truck icon
+                       anchors.centerIn: parent
+                       scale: 1.4 // SY:  enlarge the truck icon
+
+                       //source: udpXDataCACC.CACCState===2?"Images/PATH/vehLeader.png":"Images/PATH/vehFollower.png"
 
                        source:calculateImagesource()
 
-                        // My Turck ID is 0 (leading truck), 1 (following), 2(following)
-                        function calculateImagesource(){
-                            if(index===myTruckID){
-                               return("Images/PATH/vehEgo.png")
+                       // My Turck ID is 0 (leading truck), 1 (following), 2(following)
+                      /*function calculateImagesource(){
+                          if(index===myTruckID){
+                          return("Images/PATH/vehEgo.png")
                             }else if(index===0 && udpXDataCACC.CACCState===2){
                                return("Images/PATH/vehLeader.png")
                             }else{
                                 return("Images/PATH/vehFollower.png")
                             }
-                         }
+                         }*/
+
+                       function calculateImagesource(){
+//                           if (modelData.otherCACCState===0){
+                               if (udpSeret.vehicleArray[index][3]===0){
+                               return("Images/PATH/white.png")
+//                               }else if(modelData.otherCACCState===2){
+                             }else if(udpSeret.vehicleArray[index][3]===2){
+                                return("Images/PATH/blue.png")
+                           }else
+                               return("Images/PATH/gray.png")
+                          }
                     }
 
 
