@@ -21,7 +21,7 @@ Item{
         radius:15
         // SY4: the color of the button was changed
         gradient:Gradient{
-        GradientStop { position: 0; color:"#53a9f5"}
+        GradientStop { position: 0; color:"#ffffff"}
         GradientStop { position: 0.4; color:"#135585" }
         }
 
@@ -47,42 +47,39 @@ Item{
 
         }
 
+
     }
 
- /*   DropShadow {
+
+   /*DropShadow {
         color: "#aa000000"//"#00aaff"
-        anchors.fill: buttonBG
+        anchors.fill: buttonBGBlue
         horizontalOffset: 6
         verticalOffset: 6
         radius: 2.0
         fast: false
         anchors.rightMargin: -6
         samples: 16
-        source: buttonBG
-    }
-*/
+        source: buttonBGBlue
+    }*/
+
+
     MouseArea{ // SY4: margins were changed
         anchors.rightMargin: 2
         anchors.bottomMargin: 2
         anchors.leftMargin: 0
         anchors.topMargin: 0
         anchors.fill:parent
-        onPressed:{ // pressed effect is changed
 
-            if (myID==1){
-            cAccBtn.scale=1.1
-            accBtn.scale=1.0
+        onPressed:{ //SY: pressed effect is changed 3/1/2017
+
+           // cAccBtn.scale=1.1
+           // accBtn.scale=1.0
             cAccBtn.opacity=1.0
-            accBtn.opacity=0.8 //SY4:changed from 0.3 to 0.8
+            accBtn.opacity=0.7 //SY4:changed from 0.3 to 0.8
+            cAccBtn.layer.enabled=true
+            accBtn.layer.enabled=false
 
-            }
-
-            if(myID==0){
-                cAccBtn.scale=1.0
-                accBtn.scale=1.1
-                cAccBtn.opacity=0.8 //SY4:changed from 0.3 to 0.8
-                accBtn.opacity=1.0
-            }
         }
         onReleased:{
             //parent.scale=1
