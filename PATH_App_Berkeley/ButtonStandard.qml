@@ -18,6 +18,7 @@ Item{
         height:myHeight
         border.width:2
         border.color:"#FFFFFF"
+       // border.color:udpXDataCACC.CACCState===2?"#53a9f5":"#3b3b3b"
         radius:10
         //border.color:buttonColorLighter
         color:"transparent"  // SY2: the color of the button was transparent now
@@ -36,7 +37,7 @@ Item{
             anchors.verticalCenterOffset: 6
             anchors.horizontalCenterOffset: 0
             horizontalAlignment: Text.AlignHCenter
-            color:"#FFFFFF"
+            //color:udpXDataCACC.CACCState===2?"#53a9f5":"#3b3b3b"
             //font.bold: true
             anchors.centerIn: parent
             font.family: "Volvo Sans Pro"
@@ -69,16 +70,15 @@ Item{
             cAccBtn.scale=1.1
             accBtn.scale=1.0
             cAccBtn.opacity=1.0
-            accBtn.opacity=0.3
+            accBtn.opacity=0.7 //SY4:changed from 0.3 to 0.7
 
             }
 
             if(myID==0){
                 cAccBtn.scale=1.0
                 accBtn.scale=1.1
-                cAccBtn.opacity=0.3
+                cAccBtn.opacity=0.7 //SY4:changed from 0.3 to 0.7
                 accBtn.opacity=1.0
-
             }
         }
         onReleased:{
