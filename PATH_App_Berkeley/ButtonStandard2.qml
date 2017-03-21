@@ -19,16 +19,14 @@ Item{
         height:myHeight
         border.width:3
         radius:120 //SY: the shape of button is round
-        border.color:"#ffffff"
 
-        //border.color:buttonColorLighter
-        /*gradient:Gradient{
-            GradientStop { position: 0; color: buttonColor }
-            GradientStop { position: 1; color: buttonColorDarker }
+        // SY: the color of the button is change 3/2/2017
+       /*     gradient:Gradient{
+            GradientStop { position: 0; color: "#ffffff" }
+            GradientStop { position: 0.4; color: "#d3d3d3" }
         }*/
 
-        //color:"#f7f7f7"
-        color:"transparent"
+        border.color:"transparent"
 
   /*Text{
             id:buttonTxt
@@ -64,20 +62,20 @@ Item{
         onPressed:{
 
        if (myID===2) {
-            minusGapArrow.source="Images/Button/minusGap1.png"
-            parent.scale=0.9
+            minusGapArrow.source="Images/Button/minusGap13D.png"
+           // parent.scale=0.9
         } else if(myID===3){
-          addGapArrow.source="Images/Button/addGap1.png"
-          parent.scale=1.1
+          addGapArrow.source="Images/Button/addGap13D.png"
+           //parent.scale=1.1
          }
         }
 
         onReleased:{
-            parent.scale=1
+            //parent.scale=1
            if (myID===2) {
-                minusGapArrow.source="Images/Button/minusGap.png"
+                minusGapArrow.source="Images/Button/minusGap3D.png"
               } else if(myID===3){
-               addGapArrow.source="Images/Button/addGap.png"
+               addGapArrow.source="Images/Button/addGap3D.png"
 
             }
                  if(parent.opacity===1){
