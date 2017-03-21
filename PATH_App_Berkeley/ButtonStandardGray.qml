@@ -12,6 +12,7 @@ Item{
     width:myWidth+10
 
 
+
     Rectangle{
         id:buttonBGGray
         width:myWidth
@@ -67,22 +68,14 @@ Item{
         anchors.leftMargin: 0
         anchors.topMargin: 0
         anchors.fill:parent
-        onPressed:{ // pressed effect is changed
 
-            if (myID==1){
-            cAccBtn.scale=1.1
-            accBtn.scale=1.0
-            cAccBtn.opacity=1.0
-            accBtn.opacity=0.8 //SY4:changed from 0.3 to 0.8
-
-            }
-
-            if(myID==0){
-                cAccBtn.scale=1.0
-                accBtn.scale=1.1
-                cAccBtn.opacity=0.8 //SY4:changed from 0.3 to 0.8
-                accBtn.opacity=1.0
-            }
+        onPressed:{ // SY: pressed effect is changed 3/1/2017
+             //   cAccBtn.scale=1.0
+             //   accBtn.scale=1.1
+                cAccBtn.opacity=0.7 //SY4:changed from 0.3 to 0.8
+                accBtn.opacity=1.0 
+                cAccBtn.layer.enabled=false
+                accBtn.layer.enabled=true
         }
         onReleased:{
             //parent.scale=1
