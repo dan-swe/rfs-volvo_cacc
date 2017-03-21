@@ -399,7 +399,7 @@ Item{
             anchors.topMargin:100
             anchors.horizontalCenter: parent.horizontalCenter
 
-            Text{                                 //SY: change CACC below the icon here
+           /* Text{                                 //SY4: the text is disabled
                 id:accStateText
                 font.family: fontBold
                 font.bold:true
@@ -412,7 +412,7 @@ Item{
                 anchors.centerIn: parent
                 opacity: activeCruise()? 1 : ccEnabladOpacityLevel
                 color:accState>2 ? fontInstrumentColor :"#5ea6f5"  // "#007dc8"
-            }
+            }*/
 
         }
 /*
