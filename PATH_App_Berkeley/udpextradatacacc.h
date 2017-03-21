@@ -12,7 +12,6 @@ struct ExtraDataCACCStruct{
     quint8 CACCDegraded;//0: false, 1:Overheated brakes (I guess you don't need this one)
     quint8 CACCActiveConnectionToTarget;//0:no connection 1:connection (if this or the next line equals 1 the WIFI icon will appear)
     quint8 CACCActiveConnectionFromFollower;//0:no connection, 1:connection
-//    quint8 timeGapActive;//0-1
     quint8 CACCTimeGap;//0-4
     quint8 ACCTimeGap;//0-4
     quint8 CACCEvents;//0:"No popup", 1:"FCW",2:"Brake Capacity",3:"LC Left",4:"LC Right",5:"Obstacle ahead",6:"Connection lost"
