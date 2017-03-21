@@ -60,22 +60,26 @@
         <file>fonts/VolvoSansPro-Bold.otf</file>
         <file>fonts/VolvoSansPro-Medium.otf</file>
         <file>ButtonActive.qml</file>
-        <file>Images/PATH/vehEgo.png</file>
-        <file>Images/PATH/vehFollower.png</file>
-        <file>Images/PATH/vehLeader.png</file>
+        <file>Images/PATH/white.png</file>
+        <file>Images/PATH/gray.png</file>
+        <file>Images/PATH/blue.png</file>
         <file>Images/PATH/badCom.png</file>
         <file>UDP_OUT.js</file>
         <file>Images/PATH/Bottom Icon - ACC green-01.png</file>
         <file>Images/PATH/CruiseSetSpeed - background-mi.png</file>
         <file>ButtonStandard2.qml</file>
         <file>Images/Button/addGap.png</file>
-        <file>Images/Button/minusGap.png</file>
         <file>Images/Button/addGap1.png</file>
-        <file>Images/Button/minusGap1.png</file>
         <file>Images/Cruise/ccLanesWhite.png</file>
         <file>Images/Cruise/ccLanesWhite1.png</file>
         <file>ButtonStandardBlue.qml</file>
         <file>ButtonStandardGray.qml</file>
         <file>Images/PATH/greenTri2.png</file>
+        <file>Images/Button/minusGap.png</file>
+        <file>Images/Button/minusGap1.png</file>
+        <file>Images/Button/addGap3D.png</file>
+        <file>Images/Button/addGap13D.png</file>
+        <file>Images/Button/minusGap3D.png</file>
+        <file>Images/Button/minusGap13D.png</file>
     </qresource>
 </RCC>
