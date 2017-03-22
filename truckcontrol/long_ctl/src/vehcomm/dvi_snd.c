@@ -188,13 +188,13 @@ int main(int argc, char *argv[])
                 }
         }
 
-	if ( (sd = udp_peer2peer_init(&dst_addr, remote_ipaddr, local_ipaddr, remote_port, 0)) < 0) {
+	if ( (sd = udp_unicast_init(&dst_addr, remote_ipaddr, remote_port)) < 0) {
 		printf("Failure create unicast socket1 from %s to %s:%d\n",
 		local_ipaddr, remote_ipaddr, remote_port);
 		longjmp(exit_env, 2);
 	}
 
-        if ( (sd2 = udp_peer2peer_init(&dst_addr2, remote_ipaddr, local_ipaddr, remote_port2, 0)) < 0) {
+	if ( (sd2 = udp_unicast_init(&dst_addr2, remote_ipaddr, remote_port2)) < 0) {
 		printf("Failure create unicast socket2 from %s to %s:%d\n",
 			local_ipaddr, remote_ipaddr, remote_port2);
 		longjmp(exit_env, 2);
