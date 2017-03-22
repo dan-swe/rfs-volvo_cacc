@@ -136,8 +136,7 @@ int main(int argc, char *argv[])
 		case 'P': send_test = 1; 
 			  send_test_str = strdup(optarg);
 			  no_send1 = 0;
-//			  sscanf(send_test_str, "%hhu %hhu %hhu %hhu %u %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu ", 
-			  sscanf(send_test_str, "%hhu %hhu %hhu %hhu %u %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu ", 
+			  sscanf(send_test_str, "%hhu %hhu %hhu %hhu %u %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu %hhu ", 
 				&dvi_out.platooningState, //0=standby, 1=joining, 2=platooning, 3=leaving, 4=dissolve 
 							 //(PATH: I guess only 0 and 3 is used?)
 				&dvi_out.position, //-1:nothing (follower with no platoon), 0:leader, >0 Follower (Ego position of vehicle)
@@ -149,19 +148,19 @@ int main(int argc, char *argv[])
 								  // (PATH: The graphical indication is the same for all intruders)
 				&dvi_out.vehicles[0].isBraking, // 0:false, 1:braking, 2:hard braking 
 								// (PATH: same red indication for both 1 & 2)
-//    				&dvi_out.vehicles[0].otherCACCState, //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
+    				&dvi_out.vehicles[0].otherCACCState, //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
 				&dvi_out.vehicles[1].type, // 0=nothing 1=truck 2=truck with communication error
 				&dvi_out.vehicles[1].hasIntruder, // 0:false, 1:truck, 2:car, 3:MC 
 								  // (PATH: The graphical indication is the same for all intruders)
 				&dvi_out.vehicles[1].isBraking, // 0:false, 1:braking, 2:hard braking 
 								// (PATH: same red indication for both 1 & 2)
-//    				&dvi_out.vehicles[1].otherCACCState, //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
+    				&dvi_out.vehicles[1].otherCACCState, //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
 				&dvi_out.vehicles[2].type, // 0=nothing 1=truck 2=truck with communication error
 				&dvi_out.vehicles[2].hasIntruder, // 0:false, 1:truck, 2:car, 3:MC 
 								  // (PATH: The graphical indication is the same for all intruders)
-				&dvi_out.vehicles[2].isBraking // 0:false, 1:braking, 2:hard braking 
+				&dvi_out.vehicles[2].isBraking, // 0:false, 1:braking, 2:hard braking 
 								// (PATH: same red indication for both 1 & 2)
-//    				&dvi_out.vehicles[2].otherCACCState //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
+    				&dvi_out.vehicles[2].otherCACCState //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
 			  );
 			  break;
 		case 'E': send_test = 1; 
@@ -188,16 +187,14 @@ int main(int argc, char *argv[])
                           break;
                 }
         }
-//     if ( (sd = udp_peer2peer_init(&dst_addr, remote_ipaddr, local_ipaddr, remote_port, 0)) < 0) {
-//     int udp_unicast_init(struct sockaddr_in *paddr,char *ip_str,short port)
 
-	if ( (sd = udp_unicast_init(&dst_addr, remote_ipaddr, remote_port)) < 0) {
+	if ( (sd = udp_peer2peer_init(&dst_addr, remote_ipaddr, local_ipaddr, remote_port, 0)) < 0) {
 		printf("Failure create unicast socket1 from %s to %s:%d\n",
 		local_ipaddr, remote_ipaddr, remote_port);
 		longjmp(exit_env, 2);
 	}
-//        if ( (sd2 = udp_peer2peer_init(&dst_addr2, remote_ipaddr, local_ipaddr, remote_port2, 0)) < 0) {
-	if ( (sd2 = udp_unicast_init(&dst_addr2, remote_ipaddr, remote_port2)) < 0) {
+
+        if ( (sd2 = udp_peer2peer_init(&dst_addr2, remote_ipaddr, local_ipaddr, remote_port2, 0)) < 0) {
 		printf("Failure create unicast socket2 from %s to %s:%d\n",
 			local_ipaddr, remote_ipaddr, remote_port2);
 		longjmp(exit_env, 2);
@@ -296,12 +293,13 @@ int main(int argc, char *argv[])
 			egodata.CACCState = drive_mode_2_myCACCState[self_comm_pkt.user_ushort_2];
 			if( (long_output.selected_gap_level > 0) && (long_output.selected_gap_level <= 5) ) 
 				long_output.selected_gap_level--;
-			else
+			else {
 				if(long_output.selected_gap_level <= 0)
 					long_output.selected_gap_level = 0;
-			else
+				else
 				if(long_output.selected_gap_level > 5 )
 					long_output.selected_gap_level = 5;
+			}
     			egodata.CACCTimeGap = long_output.selected_gap_level;//0-4
     			egodata.ACCTimeGap = long_output.selected_gap_level;//0-4
 			egodata.CACCTargetActive = (volvo_target.TargetAvailable == 0) ? 0 : 1;
@@ -379,7 +377,7 @@ int main(int argc, char *argv[])
 				else
 					dvi_out.vehicles[0].isBraking = 0;
 				dvi_out.vehicles[0].hasIntruder = ((comm_pkt1.maneuver_des_2 & 0x03) == 1) ? 1 : 0;	//  0-2: 0=Not available 1=Cut-in 2=Cut-out
-//				dvi_out.vehicles[0].otherCACCState = drive_mode_2_myCACCState[comm_pkt1.user_ushort_2];
+				dvi_out.vehicles[0].otherCACCState = drive_mode_2_myCACCState[comm_pkt1.user_ushort_2];
 			}
 		}
 
@@ -399,7 +397,7 @@ int main(int argc, char *argv[])
 				else
 					dvi_out.vehicles[1].isBraking = 0;
 				dvi_out.vehicles[1].hasIntruder = ((comm_pkt2.maneuver_des_2 & 0x03) == 1) ? 1 : 0;	// & 0x03;	// 0-2: 0=Not available 1=Cut-in 2=Cut-out
-//				dvi_out.vehicles[1].otherCACCState = drive_mode_2_myCACCState[comm_pkt2.user_ushort_2];
+				dvi_out.vehicles[1].otherCACCState = drive_mode_2_myCACCState[comm_pkt2.user_ushort_2];
 			}
 		}
 
@@ -419,7 +417,7 @@ int main(int argc, char *argv[])
 				else
 					dvi_out.vehicles[2].isBraking = 0;
 				dvi_out.vehicles[2].hasIntruder = ((comm_pkt3.maneuver_des_2 & 0x03) == 1) ? 1 : 0;	// 0-2: 0=Not available 1=Cut-in 2=Cut-out
-//				dvi_out.vehicles[2].otherCACCState = drive_mode_2_myCACCState[comm_pkt3.user_ushort_2];
+				dvi_out.vehicles[2].otherCACCState = drive_mode_2_myCACCState[comm_pkt3.user_ushort_2];
 			}
 		}
 
