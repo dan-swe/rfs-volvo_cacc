@@ -111,6 +111,7 @@ int main(int argc, char *argv[])
 	int create_db_vars = 0;
 	long_output_typ long_output;
 	j1939_volvo_target_typ volvo_target;
+	char strbuf[80];
 
 	memset(&dvi_out, 0, sizeof(struct SeretUdpStruct));
 	memset(&egodata, 0, sizeof(struct ExtraDataCACCStruct));
@@ -453,7 +454,8 @@ int main(int argc, char *argv[])
 			 0, (struct sockaddr *) &dst_addr, sizeof(dst_addr));
 
                 if (bytes_sent < 0) {
-                        perror("dvi_snd: UDP sendto ");
+			sprintf(strbuf, "dvi_snd: UDP sendto %s", remote_ipaddr);
+                        perror(strbuf);
                         printf("port %d addr 0x%08x\n",
                                 ntohs(dst_addr.sin_port),
                                 ntohl(dst_addr.sin_addr.s_addr));
@@ -464,7 +466,8 @@ int main(int argc, char *argv[])
 			 0, (struct sockaddr *) &dst_addr2, sizeof(dst_addr2));
 
                 if (bytes_sent < 0) {
-                        perror("dvi_snd: UDP sendto ");
+			sprintf(strbuf, "dvi_snd: UDP sendto %s", remote_ipaddr);
+                        perror(strbuf);
                         printf("port %d addr 0x%08x\n",
                                 ntohs(dst_addr2.sin_port),
                                 ntohl(dst_addr2.sin_addr.s_addr));
