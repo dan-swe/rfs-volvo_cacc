@@ -3,10 +3,10 @@
 # Script to run device drivers and longitudinal control code
 # for BAA project 2008-10 
 
-from-env "AVCS_POSITION" = '1' ;
 from-env "AVCS_VEHICLE" = 'long_trk' ;
 from-env "USER";
 
+global "AVCS_POSITION" = '1' ;
 global "AVCS_DIR" = '../long_ctl/src/avcs' ;
 global "CONFIG_FILE" = 'realtime.ini' ;
 global "PLATOON_SIZE" = '1' ;
@@ -31,23 +31,14 @@ clear bold always-show
 
 skip ;
 
-shell 'Show configurations'
+shell 'Get current configuration'
 %(
 	echo
-	echo Vehicle is $AVCS_VEHICLE.
-	echo Vehicle in position $AVCS_POSITION of platoon size $PLATOON_SIZE.
-	echo Configuration file is $CONFIG_FILE.
-	echo Longitudinal controller is $LONGITUDINAL.
-	echo Longitudinal directory is $LONG_DIR.
-	echo Longitudinal configuration file is $LONG_DIR$LONG_CFG_FILE.ini
+	AVCSS_POSITION=`grep MyPltnPos /home/truckcontrol/test/realtime.ini | sed 's/=/ /g' | awk '{print $2}'`
+	PLATOON_SIZE=`grep PlatoonSize /home/truckcontrol/test/realtime.ini | sed 's/=/ /g' | awk '{print $2}'`
+	echo Vehicle in position $AVCSS_POSITION of platoon size $PLATOON_SIZE.
 	echo Sync truck number is $SYNC_TRUCK_NUMBER
-	echo Longitudinal output file name is /big/data/$LONG_CFG_FILE
-	echo DATAFILE  $DATAFILE
 	echo USER  $USER
-	echo PLOT_DIR  $PLOT_DIR
-
-	echo
-	echo
 %)
 ;
 
@@ -177,6 +168,16 @@ shell 'Stop longitudinal control'
 %)
 ;
 skip ;
+reset-global 'Set Position in platoon'
+from-user "AVCS_POSITION" 'New position?'
+;
+shell 'Setposition'
+%(
+	change_pip.sh $AVCS_POSITION
+%)
+;
+skip ;
+
 shell 'Get system time'
 %(
 	date
