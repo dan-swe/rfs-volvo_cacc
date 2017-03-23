@@ -168,10 +168,10 @@ shell 'Stop longitudinal control'
 %)
 ;
 skip ;
-reset-global 'Set Position in platoon'
+reset-global 'Configure Position-in-platoon'
 from-user "AVCS_POSITION" 'New position?'
 ;
-shell 'Setposition'
+shell 'Set Position-in-platoon'
 %(
 	change_pip.sh $AVCS_POSITION
 %)
