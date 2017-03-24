@@ -14,4 +14,9 @@ do
 	sleep 1
 	slay gpssetdate
 	CTR=$(($CTR-1))
+	YEAR=`date +%y`
+	if [[ ($YEAR -lt 16) || ($YEAR -gt 20) ]]
+	then
+		CTR=10
+	fi
 done
