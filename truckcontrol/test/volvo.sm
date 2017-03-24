@@ -188,6 +188,7 @@ from-user "SYNC_TRUCK_NUMBER" 'Sync truck number?'
 ;
 shell 'Sync time to synchronization truck (press 2 & 4 first!)'
 %(
+	slay run_gpssetdate.sh gpssetdate	
 	$TEST_DIR/settime2trucksignal -t $SYNC_TRUCK_NUMBER
 %)
 ;
