@@ -243,29 +243,24 @@ Item {
 
                        source:calculateImagesource()
 
-                       // My Turck ID is 0 (leading truck), 1 (following), 2(following)
-                      /*function calculateImagesource(){
-                          if(index===myTruckID){
-                          return("Images/PATH/vehEgo.png")
-                            }else if(index===0 && udpXDataCACC.CACCState===2){
-                               return("Images/PATH/vehLeader.png")
-                            }else{
-                                return("Images/PATH/vehFollower.png")
-                            }
-                         }*/
-
-                       function calculateImagesource(){
-//                           if (modelData.otherCACCState===0){
-                               if (udpSeret.vehicleArray[index][3]===0){
-                               return("Images/PATH/white.png")
-//                               }else if(modelData.otherCACCState===2){
-                             }else if(udpSeret.vehicleArray[index][3]===2){
-                                return("Images/PATH/blue.png")
-                           }else
-                               return("Images/PATH/gray.png")
-                          }
-                    }
-
+                       // My Truck ID is 0 (leading truck), 1 (following), 2(following)
+			function calculateImagesource(){
+				if( (index===myTruckID) {
+					if(udpXDataCACC.CACCState===0) )
+						return("Images/PATH/white.png")
+					else if(udpXDataCACC.CACCState===2) )
+						return("Images/PATH/blue.png")
+					else
+						return("Images/PATH/gray.png")
+				}
+				if (udpSeret.vehicleArray[index][3]===0){
+					return("Images/PATH/white.png")
+				}else if(udpSeret.vehicleArray[index][3]===2){
+					return("Images/PATH/blue.png")
+				}else
+					return("Images/PATH/gray.png")
+			}
+		    }
 
                     // SY3: A pair of Green Triangles to indicate the truck where driver at.
                     Image{
