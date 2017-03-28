@@ -174,7 +174,7 @@ from-user "AVCS_POSITION" 'New position?'
 ;
 shell 'Set Position-in-platoon'
 %(
-	change_pip.sh $AVCS_POSITION
+	$TEST_DIR/change_pip.sh $AVCS_POSITION
 %)
 ;
 skip ;
