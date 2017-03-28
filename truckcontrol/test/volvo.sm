@@ -169,6 +169,7 @@ shell 'Stop longitudinal control'
 ;
 skip ;
 reset-global 'Configure Position-in-platoon'
+from-shell "AVCS_POSITION" = %( grep MyPltnPos /home/truckcontrol/test/realtime.ini | sed 's/=/ /g' | awk '{print $2}' %)
 from-user "AVCS_POSITION" 'New position?'
 ;
 shell 'Set Position-in-platoon'
