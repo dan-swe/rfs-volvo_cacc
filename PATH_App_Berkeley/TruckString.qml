@@ -245,10 +245,10 @@ Item {
 
                        // My Truck ID is 0 (leading truck), 1 (following), 2(following)
 			function calculateImagesource(){
-				if( (index===myTruckID) {
-					if(udpXDataCACC.CACCState===0) )
+                if(index===myTruckID) {
+                    if(udpXDataCACC.CACCState===0)
 						return("Images/PATH/white.png")
-					else if(udpXDataCACC.CACCState===2) )
+                    else if(udpXDataCACC.CACCState===2)
 						return("Images/PATH/blue.png")
 					else
 						return("Images/PATH/gray.png")
