@@ -18,6 +18,7 @@ global "CAN_DRIVER_DIR" = '../../can/drv_sja1000/qnx' ;
 global "LONG_CFG_FILE" = 'realtime' ;
 global "LONG_PLOT" = '../plot/trkplot' ;
 global "SYNC_TRUCK_NUMBER" = '2' ;
+global "DRIVER_NUMBER" = '9999' ;
 global "LAPTOP_IP" = '128.32.235.133' ;
 global "PLOT_DIR" = '/home/jspring/plot' ;
 
@@ -54,8 +55,26 @@ shell 'Test'
 	echo
 	echo
 	./run_dvi_short.sh
+	sleep 5
+	echo
+	echo
+	echo "Displaying system time. Please check your iPhone or watch to see whether it is close."
+	echo
+	echo
+	date
+	sleep 5
 %)
 ;
+shell 'Get system time'
+%(
+        date
+%)
+;
+
+reset-global 'Set driver number'
+from-user "DRIVER_NUMBER" 'Driver number?'
+;
+
 shell 'Start'
 %(
 	echo
@@ -63,6 +82,7 @@ shell 'Start'
 	PLATOON_SIZE=`grep PlatoonSize /home/truckcontrol/test/realtime.ini | sed 's/=/ /g' | awk '{print $2}'`
 	echo Vehicle in position $AVCSS_POSITION of platoon size $PLATOON_SIZE.
 	echo Sync truck number is $SYNC_TRUCK_NUMBER
+	echo Driver number is $DRIVER_NUMBER
 	echo USER  $USER
 
 	slay  -f -Q -s TERM $LONGITUDINAL
@@ -79,7 +99,7 @@ shell 'Start'
 	slay  -f -Q -s TERM trk_cr
 	slay  -f -Q -s TERM db_slv
 
-	DATESTR=`date +%m%d%Y_%H%M%S`
+	DATESTR=`date +%m%d%Y_%H%M%S`_DN$DRIVER_NUMBER
 	echo $DATESTR >/big/data/last_start_timestamp.txt
 
 	IPADDR=`ifconfig | grep 172.16.0 | awk '{print $2}'`
