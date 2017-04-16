@@ -55,7 +55,7 @@ static db_id_t db_vars_list[] = {
 	{DB_MDL_LIDAR_VAR, sizeof( mdl_lidar_typ )},
         {DB_ENGINE_DEBUG_VAR, sizeof(can_debug_t)},
         {DB_ENGINE_RETARDER_DEBUG_VAR, sizeof(can_debug_t)},
-        {DB_DVI_RCV_VAR, sizeof(char)},
+        {DB_DVI_IN_VAR, sizeof(dvi_in_t)},
         {DB_DVI_OUT_VAR, sizeof(dvi_out_t)},
 };
 
