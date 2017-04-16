@@ -250,8 +250,8 @@ echo "CACC, ego truck 3, with target, gap level 3"
 ../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "2 1 0 0 0 3 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
 msleep 500
 echo "CACC, ego truck 3, with target, gap level 4"
-../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "2 2 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 " 
-../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "2 2 0 0 0 1 0 0 1 0 0 1 0 0 " 
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "2 2 0 0 0 1 0 0 0 1 0 0 4 1 0 0 2 "
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "2 2 0 0 0 1 0 0 0 1 0 0 4 1 0 0 2 "
 sleep 1
 echo "Turning on startup screen"
 ../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 0 0 1 0 0 0 0 0 0" -P "0 1 0 0 0 1 0 0 1 1 1 0 0 0 "
