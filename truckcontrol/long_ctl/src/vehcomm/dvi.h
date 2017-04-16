@@ -1,7 +1,7 @@
 #pragma once
 
-#define DB_DVI_RCV_TYPE		6543
-#define DB_DVI_RCV_VAR		DB_DVI_RCV_TYPE
+#define DB_DVI_IN_TYPE		6543
+#define DB_DVI_IN_VAR		DB_DVI_IN_TYPE
 #define DB_DVI_OUT_TYPE		6544
 #define DB_DVI_OUT_VAR		DB_DVI_OUT_TYPE
 
@@ -69,7 +69,11 @@ struct PathButtonStruct{
 #define TIMEGAP_PLUS            8
 
 typedef struct {
+	unsigned char acc_cacc_request; // ACC/CACC control signal from DVI; No request=0, ACC=1, CACC=2
+	unsigned char gap_request; // No request=0, else gap levels 1-5;
+} dvi_in_t;
 
-  unsigned char acc_cacc_request; // ACC/CACC control signal from DVI; No request=0, ACC=1, CACC=2
-  unsigned char gap_request; // No request=0, else gap levels 1-5;
+typedef struct {
+	struct ExtraDataCACCStruct egodata;
+	struct SeretUdpStruct dvi_out;
 } dvi_out_t;
