@@ -202,6 +202,8 @@ In either case, hit ctrl-C to stop'
 %(
 	cd $AVCS_DIR
 	./run_can1_only.sh
+	sleep 10
+	./slay_can.sh
 %)
 ;
 
