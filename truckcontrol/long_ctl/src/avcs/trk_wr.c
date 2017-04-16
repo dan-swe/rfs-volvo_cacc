@@ -28,6 +28,7 @@
 #include <densolidar.h>
 #include <long_comm.h>
 #include <veh_trk.h>
+#include <dvi.h>
 
 static int sig_list[] = 
 {
@@ -63,10 +64,13 @@ typedef struct {
 	long_output_typ cmd;
 	long_dig_out_typ dig_out;
 	veh_comm_packet_t comm_tx;
+	dvi_in_t dvi_in;
+	dvi_out_t dvi_out;
 } buffer_item;
 
 static void gather_data(long_ctrl *pctrl, long_output_typ *pout,
-		long_dig_out_typ *pdig_out, veh_comm_packet_t *pcomm_tx)
+		long_dig_out_typ *pdig_out, veh_comm_packet_t *pcomm_tx,
+		dvi_in_t *pdvi_in, dvi_out_t *pdvi_out)
 {
         long_vehicle_state *pv = &pctrl->vehicle_state;
         cbuff_typ *pbuff = &pctrl->buff;
@@ -81,6 +85,8 @@ static void gather_data(long_ctrl *pctrl, long_output_typ *pout,
 	current_item.cmd = *pout;
 	current_item.dig_out= *pdig_out;
 	current_item.comm_tx= *pcomm_tx;
+	current_item.dvi_in = *pdvi_in;
+	current_item.dvi_out = *pdvi_out;
 	current_item.process_time =
 		TIMEB_SUBTRACT(&start_time, &current_time);
 	get_current_timestamp(&current_item.ts);
@@ -109,6 +115,8 @@ static void print_data(FILE *fp, long_ctrl *pctrl)
 		long_output_typ *pcmd = &p->cmd;
 		long_dig_out_typ *pdig_out = &p->dig_out;
 		veh_comm_packet_t *pcomm_tx = &p->comm_tx;
+		dvi_in_t *pdvi_in = &p->dvi_in;
+		dvi_out_t *pdvi_out = &p->dvi_out;
 
 	print_timestamp(fp, &p->ts);					//1
 	fprintf(fp, " %.3f ", p->process_time);
@@ -410,6 +418,29 @@ static void print_data(FILE *fp, long_ctrl *pctrl)
 		fprintf(fp, "%hhu ", pv->lead_trk.user_bit_3);
 		fprintf(fp, "%hhu ", pv->second_trk.user_bit_3);
 		fprintf(fp, "%hhu ", pv->third_trk.user_bit_3);
+                fprintf(fp, "%d ", pcmd->selected_gap_level);		//235
+                fprintf(fp, "%d ", pdvi_in->gap_request);
+                fprintf(fp, "%d ", pdvi_in->acc_cacc_request);
+                fprintf(fp, "%d ", pdvi_out->egodata.CACCState); //0:nothing, 1:CACC Enabled, 2:CACC Active, 3: ACC enabled, 4:ACC active
+                fprintf(fp, "%d ", pdvi_out->egodata.CACCTargetActive); //0:false, 1:true (also used for target in ACC)
+                fprintf(fp, "%d ", pdvi_out->egodata.CACCActiveConnectionToTarget);//column 240  0:no connection 1:connection (if this or ...fromFollower equals 1 the WIFI icon will appear)
+                fprintf(fp, "%d ", pdvi_out->egodata.CACCActiveConnectionFromFollower);//0:no connection, 1:connection
+                fprintf(fp, "%d ", pdvi_out->egodata.CACCTimeGap);//0-4
+                fprintf(fp, "%d ", pdvi_out->egodata.ACCTimeGap);//0-4
+                fprintf(fp, "%d ", pdvi_out->dvi_out.platooningState); //0=standby, 2=platooning
+                fprintf(fp, "%d ", pdvi_out->dvi_out.position); //column 245 -1:nothing (follower with no platoon), 0:leader, >0 Follower (Ego position of vehicle)
+                fprintf(fp, "%d ", pdvi_out->dvi_out.vehicles[0].type); // 0=nothing 1=truck 2=truck with communication error
+                fprintf(fp, "%d ", pdvi_out->dvi_out.vehicles[0].hasIntruder); //0:false, 1:truck, 2:car, 3:MC (PATH: The graphical indication is the same for all intruders)
+                fprintf(fp, "%d ", pdvi_out->dvi_out.vehicles[0].isBraking); //0:false, 1:braking, 2:hard braking (PATH: same red indication for both 1 & 2)
+                fprintf(fp, "%d ", pdvi_out->dvi_out.vehicles[0].otherCACCState); //0:manual 2:CACC 4:ACC
+                fprintf(fp, "%d ", pdvi_out->dvi_out.vehicles[1].type); //250 
+                fprintf(fp, "%d ", pdvi_out->dvi_out.vehicles[1].hasIntruder);
+                fprintf(fp, "%d ", pdvi_out->dvi_out.vehicles[1].isBraking);
+                fprintf(fp, "%d ", pdvi_out->dvi_out.vehicles[1].otherCACCState);
+                fprintf(fp, "%d ", pdvi_out->dvi_out.vehicles[2].type);
+                fprintf(fp, "%d ", pdvi_out->dvi_out.vehicles[2].hasIntruder); //255 
+                fprintf(fp, "%d ", pdvi_out->dvi_out.vehicles[2].isBraking); 
+                fprintf(fp, "%d ", pdvi_out->dvi_out.vehicles[2].otherCACCState);
 
                 fprintf(fp, "\n");
 
@@ -435,6 +466,8 @@ int main(int argc, char *argv[])
 	long_output_typ long_out;
 	long_dig_out_typ dig_out;
 	veh_comm_packet_t comm_tx;
+	dvi_in_t dvi_in;
+	dvi_out_t dvi_out;
 
         while ((option = getopt(argc, argv, "s:t:v")) != EOF) {
                 switch(option) {
@@ -505,7 +538,11 @@ int main(int argc, char *argv[])
 			sizeof(long_dig_out_typ), &dig_out);
 		db_clt_read(pclt, DB_COMM_TX_VAR,
 			sizeof(veh_comm_packet_t), &comm_tx);
-		gather_data(&control_state, &long_out, &dig_out, &comm_tx);
+		db_clt_read(pclt, DB_DVI_IN_VAR,
+			sizeof(dvi_in_t), &dvi_in);
+		db_clt_read(pclt, DB_DVI_OUT_VAR,
+			sizeof(dvi_out_t), &dvi_out);
+		gather_data(&control_state, &long_out, &dig_out, &comm_tx, &dvi_in, &dvi_out);
 		TIMER_WAIT (ptimer);
 	}
 }
