@@ -17,6 +17,8 @@
 #include "path_gps_lib.h"
 #include "long_comm.h"
 #include "veh_lib.h"
+#include "../avcs/veh_trk.h"
+#include "../avcs/clt_vars.h"
 //#include "dvi.h"
 
 #define quint8 unsigned char
@@ -137,9 +139,11 @@ int main(int argc, char *argv[])
 	char truck3_comm_pkt_user_bit_3;
 	char truck3_comm_pkt_maneuver_des_2;
 	char truck3_comm_pkt_my_pip;
+	char selected_gap_level;
 	unsigned char update_ts1 = 0;
 	unsigned char update_ts2 = 0;
 	unsigned char update_ts3 = 0;
+	long_output_typ long_output;
 
 	char *self_packet_str = NULL;
 	char *truck1_packet_str = NULL;
@@ -152,6 +156,8 @@ int main(int argc, char *argv[])
 
 	memset(&dvi_out, 0, sizeof(struct SeretUdpStruct));
 	memset(&egodata, 0, sizeof(struct ExtraDataCACCStruct));
+	memset(&long_output, 0, sizeof(long_output_typ));
+
 	while ((ch = getopt(argc, argv, "S:1:2:3:")) != EOF) {
                 switch (ch) {
 		case 'S': self_packet_str = strdup(optarg);
@@ -162,24 +168,34 @@ int main(int argc, char *argv[])
 			  break;
 		case '3': truck3_packet_str = strdup(optarg);
 			  break;
-                default:  printf("Usage: %s -S,1,2,3 \"user_ushort_2(CACCState)=<0-stay, 1-manual,  2-ACC,  3-CACC> user_bit_3(brake switch)=<0,1> maneuver_des_2(Cut in)=<0,1-cut-in,2=cut-out> my_pip(my platoon position)=<1,2,3> update_ts(get_current_timestamp to check comm updates)=<0,1>\"\n",argv[0]);
-			  printf("So for instance, the input for the self-vehicle might be:\n\t%s -S \"user_ushort_2=3 user_bit_3=0 maneuver_des_2=1 my_pip=2 update_ts=1\"\n", argv[0]);
+                default:  printf("Usage: %s -S,1,2,3 \"user_ushort_2(CACCState)=<0-stay, 1-manual,  2-ACC,  3-CACC> user_bit_3(brake switch)=<0,1> maneuver_des_2(Cut in)=<0,1-cut-in,2=cut-out> my_pip(my platoon position)=<1,2,3> update_ts(get_current_timestamp to check comm updates)=<0,1> selected_gap_level=<1-5>\"\n",argv[0]);
+			  printf("So for instance, the input for the self-vehicle might be:\n\t%s -S \"user_ushort_2=3 user_bit_3=1 maneuver_des_2=1 my_pip=3 selected_gap_level=3\"\n", argv[0]);
 			  exit(EXIT_FAILURE);
                           break;
                 }
         }
 
 	if(self_packet_str != NULL) {
-	    sscanf(self_packet_str, "user_ushort_2=%hhu user_bit_3=%hhu maneuver_des_2=%hhu my_pip=%hhu", 
+	    sscanf(self_packet_str, "user_ushort_2=%hhu user_bit_3=%hhu maneuver_des_2=%hhu my_pip=%hhu selected_gap_level=%hhu", 
 		&self_comm_pkt_user_ushort_2,
 		&self_comm_pkt_user_bit_3,
 		&self_comm_pkt_maneuver_des_2,
-		&self_comm_pkt_my_pip
+		&self_comm_pkt_my_pip,
+		&selected_gap_level
 	    );
 		self_comm_pkt.user_ushort_2= self_comm_pkt_user_ushort_2 & 0x03;
 		self_comm_pkt.user_bit_3 = self_comm_pkt_user_bit_3 & 0x01;
 		self_comm_pkt.maneuver_des_2 = self_comm_pkt_maneuver_des_2 & 0x03;
 		self_comm_pkt.my_pip = self_comm_pkt_my_pip & 0x03;
+		long_output.selected_gap_level = selected_gap_level & 0x0F;
+                printf("self_comm_pkt: user_ushort_2(CACCState)=%hhu user_bit_3(brake switch)=%hhu maneuver_des_2(Cut in)=%hhu my_pip(my platoon position)=%hhu update_ts(get_current_timestamp to check comm updates)=%hhu selected_gap_level %hhu\n",
+			self_comm_pkt.user_ushort_2,
+			self_comm_pkt.user_bit_3,
+			self_comm_pkt.maneuver_des_2,
+			self_comm_pkt.my_pip,
+			update_ts1, 
+			long_output.selected_gap_level
+		);
 	}
 
 	if(truck1_packet_str != NULL) {
@@ -188,18 +204,18 @@ int main(int argc, char *argv[])
 		&truck1_comm_pkt_user_bit_3,
 		&truck1_comm_pkt_maneuver_des_2,
 		&truck1_comm_pkt_my_pip,
-		&update_ts1 
+		&update_ts1
 	    );
 		comm_pkt1.user_ushort_2= truck1_comm_pkt_user_ushort_2 & 0x03;
 		comm_pkt1.user_bit_3 = truck1_comm_pkt_user_bit_3 & 0x01;
 		comm_pkt1.maneuver_des_2 = truck1_comm_pkt_maneuver_des_2 & 0x03;
 		comm_pkt1.my_pip = truck1_comm_pkt_my_pip & 0x03;
-                printf("comm_pkt1: user_ushort_2(CACCState)=%hhu user_bit_3(brake switch)=%hhu maneuver_des_2(Cut in)=%hhu my_pip(my platoon position)=%hhu update_ts(get_current_timestamp to check comm updates)=%hhu\"\n",
+                printf("comm_pkt1: user_ushort_2(CACCState)=%hhu user_bit_3(brake switch)=%hhu maneuver_des_2(Cut in)=%hhu my_pip(my platoon position)=%hhu update_ts(get_current_timestamp to check comm updates)=%hhu\n",
 			comm_pkt1.user_ushort_2,
 			comm_pkt1.user_bit_3,
 			comm_pkt1.maneuver_des_2,
 			comm_pkt1.my_pip,
-			update_ts1 
+			update_ts1
 		);
 	}
 	if(update_ts1 != 0)
@@ -217,12 +233,12 @@ int main(int argc, char *argv[])
 		comm_pkt2.user_bit_3 = truck2_comm_pkt_user_bit_3 & 0x01;
 		comm_pkt2.maneuver_des_2 = truck2_comm_pkt_maneuver_des_2 & 0x03;
 		comm_pkt2.my_pip = truck2_comm_pkt_my_pip & 0x03;
-                printf("comm_pkt2: user_ushort_2(CACCState)=%d user_bit_3(brake switch)=%d maneuver_des_2(Cut in)=%d my_pip(my platoon position)=%d update_ts(get_current_timestamp to check comm updates)=%d\"\n",
+                printf("comm_pkt2: user_ushort_2(CACCState)=%hhu user_bit_3(brake switch)=%hhu maneuver_des_2(Cut in)=%hhu my_pip(my platoon position)=%hhu update_ts(get_current_timestamp to check comm updates)=%hhu\n",
 			comm_pkt2.user_ushort_2,
 			comm_pkt2.user_bit_3,
 			comm_pkt2.maneuver_des_2,
 			comm_pkt2.my_pip,
-			update_ts2 
+			update_ts2
 		);
 	}
 	if(update_ts2 != 0)
@@ -240,12 +256,12 @@ int main(int argc, char *argv[])
 		comm_pkt3.user_bit_3 = truck3_comm_pkt_user_bit_3 & 0x01;
 		comm_pkt3.maneuver_des_2 = truck3_comm_pkt_maneuver_des_2 & 0x03;
 		comm_pkt3.my_pip = truck3_comm_pkt_my_pip & 0x03;
-                printf("comm_pkt3: user_ushort_2(CACCState)=%d user_bit_3(brake switch)=%d maneuver_des_2(Cut in)=%d my_pip(my platoon position)=%d update_ts(get_current_timestamp to check comm updates)=%d\"\n",
+                printf("comm_pkt3: user_ushort_2(CACCState)=%hhu user_bit_3(brake switch)=%hhu maneuver_des_2(Cut in)=%hhu my_pip(my platoon position)=%hhu update_ts(get_current_timestamp to check comm updates)=%hhu\n",
 			comm_pkt3.user_ushort_2,
 			comm_pkt3.user_bit_3,
 			comm_pkt3.maneuver_des_2,
 			comm_pkt3.my_pip,
-			update_ts3 
+			update_ts3
 		);
 	}
 	if(update_ts3 != 0)
@@ -267,6 +283,8 @@ int main(int argc, char *argv[])
 		exit(EXIT_SUCCESS);
 	} else
 		sig_ign(sig_list, sig_hand);
+
+		db_clt_write(pclt, DB_LONG_OUTPUT_VAR, sizeof(long_output_typ), &long_output);
 
 		if(truck1_packet_str != NULL)
 			db_clt_write(pclt, DB_COMM_LEAD_TRK_VAR, sizeof(veh_comm_packet_t), &comm_pkt1);
