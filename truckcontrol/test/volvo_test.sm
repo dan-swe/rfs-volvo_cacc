@@ -41,7 +41,7 @@ shell 'Test'
 	echo
 	cd $AVCS_DIR
 	./run_can1_only.sh &
-	sleep 5
+	sleep 10
 	./slay_can.sh
 	echo
 	echo
@@ -51,17 +51,28 @@ shell 'Test'
 	sleep 5
 	echo
 	echo
-	echo "Testing driver's DVI. If the DVI is working, you should see it cycle through some display states."
+	echo "Testing both DVIs. If one/both of the DVIs is working, you should see it cycle through some display states."
 	echo
 	echo
-	./run_dvi_short.sh
 	sleep 5
+	./run_dvi_short.sh
+	echo
+	echo
+	echo "Did both of the DVIs show at least six different states?  If not, make sure you have the correct tablet (check the number on the back), and that the tablet is connected to the correct access point (i.e. TNL-47[4,5,or 6]), and then run this test again."
+	echo
+	echo
+	sleep 10
 	echo
 	echo
 	echo "Displaying system time. Please check your iPhone or watch to see whether it is close."
 	echo
 	echo
 	date
+	echo
+	echo
+	echo "Is the system time correct?  If it's wrong (make sure you check the month and year, too!), then you need to execute /etc/rc.d/rc.local as root."
+	echo
+	echo
 	sleep 5
 %)
 ;
