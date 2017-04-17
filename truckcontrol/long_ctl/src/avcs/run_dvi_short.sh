@@ -54,17 +54,25 @@ then
 fi
 
 ../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 2 0 0 0 0" -P "2 0 0 0 0 2 1 1 0 1 0 0 0 1 0 0 0 "
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "2 1 0 0 0 2 0 0 0 0" -P "2 0 0 0 0 2 1 1 0 1 0 0 0 1 0 0 0 "
 msleep 800
 ../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 3 0 0 0 0" -P "2 1 0 0 0 1 0 0 0 2 1 1 0 1 0 0 0 "
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "2 1 0 0 0 3 0 0 0 0" -P "2 1 0 0 0 1 0 0 0 2 1 1 0 1 0 0 0 "
 msleep 800
 ../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "2 2 0 0 0 1 0 0 0 1 0 0 0 2 1 1 0 "
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "2 2 0 0 0 1 0 0 0 1 0 0 0 2 1 1 0 "
 msleep 800
 ../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 2 0 0 0" -P "2 0 0 0 0 2 1 1 0 1 0 0 0 1 0 0 0 "
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "4 1 0 0 0 0 2 0 0 0" -P "2 0 0 0 0 2 1 1 0 1 0 0 0 1 0 0 0 "
 msleep 800
 ../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 3 0 0 0" -P "2 1 0 0 0 1 0 0 0 2 1 1 0 1 0 0 0 "
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "4 1 0 0 0 0 3 0 0 0" -P "2 1 0 0 0 1 0 0 0 2 1 1 0 1 0 0 0 "
 msleep 800
 ../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "4 1 0 0 0 0 4 0 0 0" -P "2 2 0 0 0 1 0 0 0 1 0 0 0 2 1 1 0 "
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "4 1 0 0 0 0 4 0 0 0" -P "2 2 0 0 0 1 0 0 0 1 0 0 0 2 1 1 0 "
 msleep 800
 ../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "0 1 0 0 0 0 4 0 0 0" -P "2 2 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 "
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "0 1 0 0 0 0 4 0 0 0" -P "2 2 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 "
 msleep 800
 ../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "0 1 0 0 0 0 4 0 0 0" -P "0 2 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 "
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "0 1 0 0 0 0 4 0 0 0" -P "0 2 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 "
