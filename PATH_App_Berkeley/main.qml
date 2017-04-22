@@ -52,7 +52,7 @@ ApplicationWindow {
     property bool isLeader:udpSeret.position===0
     property int platooningState:udpSeret.platooningState
     property int popupID:udpSeret.popup
-    property int numberOfTrucks:1  // SY: The default is 1
+    property int numberOfTrucks:3  // SY: The default is 1
     property string exitDistance:(udpSeret.exitDistance/10.0).toFixed(1)
     property int myTruckID:udpSeret.position
     property var stringArray:udpSeret.vehicleArray
@@ -272,10 +272,10 @@ ApplicationWindow {
 
 
 
-       WaitingScreen{
+ /*      WaitingScreen{
             id:waitingHolder
-        }
-
+       }
+*/
 
         Row{
             id:buttonRow
@@ -366,9 +366,9 @@ ApplicationWindow {
 
                     layer.enabled:udpXDataCACC.CACCState===2? true : false //SY: a laye was add here  3/1/2017
                     layer.effect:Glow {
-                        radius:10
-                        spread:0.15
-                        color: "white"
+                        radius:13                            // modified on 4/18/2017
+                        spread:0.17                          // modified on 4/18/2017
+                        color: "white"                       
                         transparentBorder:true
                        }
                 }
@@ -393,10 +393,10 @@ ApplicationWindow {
                     myWidth: 225  // SY: Change the parameters from 180 to 225
                     //myState:0
 
-                    layer.enabled:udpXDataCACC.CACCState===4? true : false //SY: a laye was add here  3/1/2017
+                    layer.enabled:udpXDataCACC.CACCState===4? true : false //SY: a layer was add here  3/1/2017
                     layer.effect:Glow {
-                           radius:10
-                           spread:0.15
+                           radius:13                       // modified on 4/18/2017
+                           spread:0.17                     // modified on 4/18/2017
                            color: "white"
                            transparentBorder:true
                        }
