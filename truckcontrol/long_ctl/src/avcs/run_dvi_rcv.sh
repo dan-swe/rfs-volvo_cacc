@@ -57,12 +57,26 @@ fi
 ../../../test/db_slv -Q -S `hostname` &
 sleep 1
 ../../../test/trk_cr &
+../../../test/trk_wr -t 50 >./trk_wr_test.txt &
 ../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "2 2 0 0 0 1 0 0 0 1 0 0 4 1 0 0 2 "
 ../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "2 2 0 0 0 1 0 0 0 1 0 0 4 1 0 0 2 "
 echo "Try pressing buttons on driver's DVI"
-../vehcomm/qnx/dvi_rcv -v -A $IPADDR -a $GALAXYWIRELESS -d &
+../vehcomm/qnx/dvi_rcv -v -A $IPADDR -a $GALAXYWIRELESS &
 sleep 10
 slay dvi_rcv
+echo
+echo
+echo "Did you see an integer and a timestamp (4 copies each time you pressed a button)?"
+echo
+echo
 sleep 2
 echo "Now try pressing buttons on passenger's DVI"
-../vehcomm/qnx/dvi_rcv -v -A $IPADDR -a $GALAXYWIRELESS2 -d
+../vehcomm/qnx/dvi_rcv -v -A $IPADDR -a $GALAXYWIRELESS2 &
+sleep 10
+echo
+echo
+echo "Did you anything being displayed? The passenger DVI cannot transmit any button presses to the host."
+echo
+echo
+sleep 10
+./slay_can.sh
