@@ -41,7 +41,7 @@ static void sig_hand(int code)
 }
 
 static db_id_t db_vars_list[] = {
-        {DB_DVI_IN_VAR, sizeof(char)},
+        {DB_DVI_RCV_VAR, sizeof(char)},
 };
 
 int main( int argc, char *argv[] )
@@ -57,7 +57,7 @@ int main( int argc, char *argv[] )
         struct sockaddr_in dst_addr;
 	int create_db_vars = 0;
 	int use_db = 1;
-	dvi_in_t dvi_in;
+	dvi_out_t dvi_out;
 	float ts = 0;
 	float ts_sav = 0;
 	char gap_level = 3;
@@ -98,9 +98,6 @@ int main( int argc, char *argv[] )
 			pclt = db_list_init(argv[0], hostname, domain, xport, db_vars_list, 1, NULL,  0); 
 		else
 			pclt = db_list_init(argv[0], hostname, domain, xport, NULL, 0, NULL, 0); 
-		dvi_in.acc_cacc_request = 0;
-		dvi_in.gap_request = gap_level;
-		db_clt_write(pclt, DB_DVI_IN_VAR, sizeof(dvi_in_t), &dvi_in);
 	}
 
 	if( setjmp( exit_env ) != 0 ) {
@@ -120,6 +117,10 @@ int main( int argc, char *argv[] )
 		longjmp(exit_env, 2);
 	}
 
+	dvi_out.acc_cacc_request = 0;
+	dvi_out.gap_request = gap_level;
+	db_clt_write(pclt, DB_DVI_OUT_VAR, sizeof(dvi_out_t), &dvi_out);
+
 	while (1) {
                 if ((bytes_received = recvfrom(sd, &buf, 1, 0, (struct sockaddr *) &src_addr, (socklen_t *) &socklen)) <= 0) {
                         perror("recvfrom failed\n");
@@ -133,27 +134,27 @@ int main( int argc, char *argv[] )
 		if(use_db != 0) {
 			switch(buf){
 				case ACC_REQUESTED:
-					dvi_in.acc_cacc_request = 1;
+					dvi_out.acc_cacc_request = 1;
 					break;
 				case CACC_REQUESTED:
-					dvi_in.acc_cacc_request = 2;
+					dvi_out.acc_cacc_request = 2;
 					break;
 				case GAP_DECREASE_REQUESTED:
 					if( (ts - ts_sav) > 0.2)
 						if( (gap_level--) < 1)
 							gap_level = 1;
 					ts_sav = ts;
-					dvi_in.gap_request = gap_level;
+					dvi_out.gap_request = gap_level;
 					break;
 				case GAP_INCREASE_REQUESTED:
 					if( (ts - ts_sav) > 0.2)
 						if( (gap_level++) > 5)
 							gap_level = 5;
 					ts_sav = ts;
-					dvi_in.gap_request = gap_level;
+					dvi_out.gap_request = gap_level;
 					break;
 			}
-			db_clt_write(pclt, DB_DVI_IN_VAR, sizeof(dvi_in_t), &dvi_in);
+			db_clt_write(pclt, DB_DVI_OUT_VAR, sizeof(dvi_out_t), &dvi_out);
 		}
 		if(buf != 0) 
 		{
