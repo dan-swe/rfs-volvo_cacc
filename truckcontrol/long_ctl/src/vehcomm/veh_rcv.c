@@ -72,6 +72,9 @@ int main( int argc, char *argv[] )
 	int lead_vehicle_id;
 	int second_vehicle_id;
 	int third_vehicle_id;
+	int ts1_sav = 0;
+	int ts2_sav = 0;
+	int ts3_sav = 0;
         struct sockaddr_in src_addr;
         char *remote_ipaddr = "10.0.1.9";       /// address of UDP destination
         char *local_ipaddr = "127.0.0.1";       /// address of UDP destination
@@ -205,15 +208,18 @@ int main( int argc, char *argv[] )
 		 *  DB_COMM_LEAD_TRK, DB_COMM_TRK_SECOND, and DB_COMM_TRK_THIRD if relevant 
 		 * For second and third vehicles, both may be written from same packet
 		 */
-		if (comm_pkt.my_pip == lead_vehicle_id)  
-			db_clt_write(pclt, DB_COMM_LEAD_TRK_VAR,
-				sizeof(comm_pkt), &comm_pkt);
-		if (comm_pkt.my_pip == second_vehicle_id)  
-			db_clt_write(pclt, DB_COMM_SECOND_TRK_VAR,
-				sizeof(comm_pkt), &comm_pkt);
-		if (comm_pkt.my_pip == third_vehicle_id)  
-			db_clt_write(pclt, DB_COMM_THIRD_TRK_VAR,
-				sizeof(comm_pkt), &comm_pkt);
+		if ( (comm_pkt.my_pip == lead_vehicle_id) && ((TS_TO_MS(&comm_pkt.ts) - ts1_sav) > 0) ) {
+			db_clt_write(pclt, DB_COMM_LEAD_TRK_VAR, sizeof(comm_pkt), &comm_pkt);
+			ts1_sav = TS_TO_MS(&comm_pkt.ts);
+		}
+		if ( (comm_pkt.my_pip == second_vehicle_id) && ((TS_TO_MS(&comm_pkt.ts) - ts2_sav) > 0) ) { 
+			db_clt_write(pclt, DB_COMM_SECOND_TRK_VAR, sizeof(comm_pkt), &comm_pkt);
+			ts2_sav = TS_TO_MS(&comm_pkt.ts);
+		}
+		if ( (comm_pkt.my_pip == third_vehicle_id) && ((TS_TO_MS(&comm_pkt.ts) - ts3_sav) > 0) ) {
+			db_clt_write(pclt, DB_COMM_THIRD_TRK_VAR, sizeof(comm_pkt), &comm_pkt);
+			ts3_sav = TS_TO_MS(&comm_pkt.ts);
+		}
 		if (verbose) {
 			printf("Vehicle %d received packet from vehicle %d speed %f\n",
 				self_vehicle_id, comm_pkt.my_pip, comm_pkt.velocity);
