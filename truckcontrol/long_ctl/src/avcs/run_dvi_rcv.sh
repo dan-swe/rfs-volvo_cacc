@@ -78,5 +78,7 @@ echo
 echo "Did you anything being displayed? The passenger DVI cannot transmit any button presses to the host."
 echo
 echo
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "0 2 0 0 0 1 0 0 0 1 0 0 4 1 0 0 2 "
+../vehcomm/$OBJDIR/dvi_snd -c -C 0 -r 10007 -R 10005 -a $GALAXYWIRELESS2 -A $IPADDR -E "2 1 0 0 0 4 0 0 0 0" -P "0 2 0 0 0 1 0 0 0 1 0 0 4 1 0 0 2 "
 sleep 10
 ./slay_can.sh
